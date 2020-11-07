@@ -46,7 +46,7 @@ Class CT_Widget extends CT_Component {
 
 		ob_start();
 
-		if ( ! $GLOBALS['wp_widget_factory']->widgets[$atts['original']['class_name']] ) {
+		if ( ! isset( $GLOBALS['wp_widget_factory']->widgets[$atts['original']['class_name']] ) ) {
 			echo "<div><b>Error!</b><br/> No '".$atts['original']['class_name']."' widget registered in this installation.<br/><br/></div>";
 			return ob_get_clean();
 		}
@@ -121,6 +121,10 @@ Class CT_Widget extends CT_Component {
 	 */
 
 	function widgets_list() {
+
+		if (oxygen_hide_element_button($this->options['tag'])) {
+			return;
+		}
 		
 		foreach ( $GLOBALS['wp_widget_factory']->widgets as $class => $widget ) { ?>
 

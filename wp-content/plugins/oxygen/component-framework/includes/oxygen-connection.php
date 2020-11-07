@@ -118,7 +118,7 @@ Class OXY_VSB_Connection {
 
 	function ct_block_library_page() {
 
-		if(!oxygen_vsb_current_user_can_access()) {
+		if(!oxygen_vsb_current_user_can_full_access()) {
 			return;
 		}
 
@@ -144,7 +144,7 @@ Class OXY_VSB_Connection {
 
 	function ct_connection_page_category_meta_box() {
 
-		if(!current_user_can( 'manage_options' )) {
+		if(!oxygen_vsb_current_user_can_full_access()) {
 			return;
 		}
 

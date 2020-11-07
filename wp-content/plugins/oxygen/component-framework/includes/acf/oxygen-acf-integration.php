@@ -52,7 +52,7 @@ class oxygen_acf_integration {
 		 * several post_types, so we have to check which post types it is configured to render
 		 * and grab the field groups related to each of them.
 		 */
-		$post_type = $post->post_type;
+		$post_type = isset($post->post_type) ? $post->post_type : false;
 		$template_type = get_post_meta($post->ID, 'ct_template_type', true);
 
 		$show_all_acf_fields = get_option("oxygen_vsb_show_all_acf_fields")=='true';

@@ -1535,6 +1535,9 @@ class OxyProMenu extends OxyEl {
             top: 0;
             left: 100%;
         }
+        .oxy-pro-menu-container:not(.oxy-pro-menu-open-container):not(.oxy-pro-menu-off-canvas-container) a {
+            -webkit-tap-highlight-color: transparent;
+        }
         .oxy-pro-menu-dropdown-links-toggle.oxy-pro-menu-open-container .menu-item-has-children ul,
         .oxy-pro-menu-dropdown-links-toggle.oxy-pro-menu-off-canvas-container .menu-item-has-children ul {
             border-radius: 0px !important;
@@ -1604,7 +1607,7 @@ class OxyProMenu extends OxyEl {
             document.addEventListener('oxygen-ajax-element-loaded', oxygen_init_pro_menu, false);
                 
             jQuery(".oxygen-body")
-            .on('mouseenter', '.oxy-pro-menu-show-dropdown .menu-item-has-children', function() {
+            .on('mouseenter', '.oxy-pro-menu-show-dropdown:not(.oxy-pro-menu-open-container) .menu-item-has-children', function() {
                 var subMenu = jQuery(this).children('.sub-menu');
                 subMenu.addClass('aos-animate oxy-pro-menu-dropdown-animating').removeClass('sub-menu-left');
 
@@ -1736,9 +1739,11 @@ class OxyProMenu extends OxyEl {
                 }
 
                 // hide the menu and follow the anchor
-                jQuery('.oxy-pro-menu-open').removeClass('oxy-pro-menu-open');
-                jQuery('.oxy-pro-menu-open-container').removeClass('oxy-pro-menu-open-container');
-                jQuery('.oxy-nav-menu-prevent-overflow').removeClass('oxy-nav-menu-prevent-overflow');
+                if (jQuery(this).attr("href").indexOf("#")===0) {
+                    jQuery('.oxy-pro-menu-open').removeClass('oxy-pro-menu-open');
+                    jQuery('.oxy-pro-menu-open-container').removeClass('oxy-pro-menu-open-container');
+                    jQuery('.oxy-nav-menu-prevent-overflow').removeClass('oxy-nav-menu-prevent-overflow');
+                }
                 jQuery(this).click();
             });
 

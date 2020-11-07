@@ -95,10 +95,10 @@ function ct_check_templates_post() {
 	$post_type = get_post_type( $post->ID );
 
 	if ( $post_type == 'ct_template' && !defined("SHOW_CT_BUILDER") 
-		&& stripslashes($_REQUEST['xlink']) != 'css' 
-		&& stripslashes($_REQUEST['action']) != 'ct_exec_code' 
-		&& stripslashes($_REQUEST['action']) != 'ct_render_shortcode'
-		&& stripslashes($_REQUEST['action']) != 'oxy_render_nav_menu' ) {
+		&& ( empty($_REQUEST['xlink']) || stripslashes($_REQUEST['xlink']) != 'css' )
+		&& ( empty($_REQUEST['action']) || stripslashes($_REQUEST['action']) != 'ct_exec_code' )
+		&& ( empty($_REQUEST['action']) || stripslashes($_REQUEST['action']) != 'ct_render_shortcode' )
+		&& ( empty($_REQUEST['action']) || stripslashes($_REQUEST['action']) != 'oxy_render_nav_menu' ) ) {
 		wp_redirect( esc_url_raw( get_edit_post_link( $post->ID, "" ) ));
 		exit;
 	}
@@ -157,7 +157,7 @@ add_action( 'manage_ct_template_posts_custom_column' , 'ct_custom_view_column', 
 
 function ct_oxygen_meta_box() {
 
-	if(!oxygen_vsb_current_user_can_access()) {
+	if(!oxygen_vsb_current_user_can_full_access()) {
 		return;
 	}
 
@@ -222,6 +222,7 @@ function ct_oxygen_meta_box() {
 	}
 }
 add_action( 'add_meta_boxes', 'ct_oxygen_meta_box' );
+
 
 function ct_view_taxonomies_selector($field_name, $selected_items, $alloption = false) {
 	?>
@@ -572,6 +573,10 @@ function ct_view_meta_box_callback( $post ) {
 				echo $parent_dropdown;
 				wp_nonce_field( 'ct_shortcode_meta_box', 'ct_shortcode_meta_box_nonce' );
 			?>
+				<p>
+					<?php $post_locked = get_post_meta( $post->ID, 'oxygen_lock_post_edit_mode', true ); ?>
+					<label><input <?php checked($post_locked, "true") ?> type="checkbox" name="oxygen_lock_post_edit_mode" value="true"><?php _e( "Lock Post In Edit Mode", "oxygen" ); ?></label>
+				</p>
 				<p>
 					<span id="ct-toggle-shortcodes"><?php _e( "Shortcodes", "oxygen" ); ?></span>
 				</p>
@@ -1003,6 +1008,10 @@ function ct_view_meta_box_callback( $post ) {
 		}
 			$shortcodes = get_post_meta( $post->ID, 'ct_builder_shortcodes', true );
 		?>
+		<p>
+			<?php $post_locked = get_post_meta( $post->ID, 'oxygen_lock_post_edit_mode', true ); ?>
+			<label><input <?php checked($post_locked, "true") ?> type="checkbox" name="oxygen_lock_post_edit_mode" value="true"><?php _e( "Lock Post In Edit Mode", "oxygen" ); ?></label>
+		</p>
 		<p>
 			<span id="ct-toggle-shortcodes"><?php _e( "Shortcodes", "component-theme" ); ?></span>
 		</p>

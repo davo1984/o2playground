@@ -147,7 +147,13 @@ Class Oxy_Tabs extends CT_Component {
      * @author Ilya
 	 */
 
-	function tab_button() { ?>
+	function tab_button() { 
+		
+		if (oxygen_hide_element_button($this->options['tag'])) {
+			return;
+		}
+		
+		?>
 
 		<div class="oxygen-control-row"
 			ng-show="isActiveName('oxy_tabs')">

@@ -15,7 +15,7 @@ add_action('admin_menu', 'ct_dashboard_main_page');
 
 function ct_dashboard_main_page(){
 
-	if(!oxygen_vsb_current_user_can_access()) {
+	if(!oxygen_vsb_current_user_can_full_access()) {
 		return;
 	}
 
@@ -27,7 +27,7 @@ function ct_dashboard_main_page(){
 					'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIzODFweCIgaGVpZ2h0PSIzODVweCIgdmlld0JveD0iMCAwIDM4MSAzODUiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+ICAgICAgICA8dGl0bGU+VW50aXRsZWQgMzwvdGl0bGU+ICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPiAgICA8ZGVmcz4gICAgICAgIDxwb2x5Z29uIGlkPSJwYXRoLTEiIHBvaW50cz0iMC4wNiAzODQuOTQgMzgwLjgwNSAzODQuOTQgMzgwLjgwNSAwLjYyOCAwLjA2IDAuNjI4Ij48L3BvbHlnb24+ICAgIDwvZGVmcz4gICAgPGcgaWQ9IlBhZ2UtMSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+ICAgICAgICA8ZyBpZD0iT3h5Z2VuLUljb24tQ01ZSyI+ICAgICAgICAgICAgPG1hc2sgaWQ9Im1hc2stMiIgZmlsbD0id2hpdGUiPiAgICAgICAgICAgICAgICA8dXNlIHhsaW5rOmhyZWY9IiNwYXRoLTEiPjwvdXNlPiAgICAgICAgICAgIDwvbWFzaz4gICAgICAgICAgICA8ZyBpZD0iQ2xpcC0yIj48L2c+ICAgICAgICAgICAgPHBhdGggZD0iTTI5Ny41MDgsMzQ5Ljc0OCBDMjc1LjQ0MywzNDkuNzQ4IDI1Ny41NTYsMzMxLjg2IDI1Ny41NTYsMzA5Ljc5NiBDMjU3LjU1NiwyODcuNzMxIDI3NS40NDMsMjY5Ljg0NCAyOTcuNTA4LDI2OS44NDQgQzMxOS41NzMsMjY5Ljg0NCAzMzcuNDYsMjg3LjczMSAzMzcuNDYsMzA5Ljc5NiBDMzM3LjQ2LDMzMS44NiAzMTkuNTczLDM0OS43NDggMjk3LjUwOCwzNDkuNzQ4IEwyOTcuNTA4LDM0OS43NDggWiBNMjIyLjMwNCwzMDkuNzk2IEMyMjIuMzA0LDMxMi4wMzkgMjIyLjQ0NywzMTQuMjQ3IDIyMi42MzksMzE2LjQ0MSBDMjEyLjMzLDMxOS4wOTIgMjAxLjUyOCwzMjAuNTA1IDE5MC40MDMsMzIwLjUwNSBDMTE5LjAxLDMyMC41MDUgNjAuOTI5LDI2Mi40MjMgNjAuOTI5LDE5MS4wMzEgQzYwLjkyOSwxMTkuNjM4IDExOS4wMSw2MS41NTcgMTkwLjQwMyw2MS41NTcgQzI2MS43OTQsNjEuNTU3IDMxOS44NzcsMTE5LjYzOCAzMTkuODc3LDE5MS4wMzEgQzMxOS44NzcsMjA2LjgzMyAzMTcuMDIsMjIxLjk3OCAzMTEuODE1LDIzNS45OSBDMzA3LjE3OSwyMzUuMDk3IDMwMi40MDQsMjM0LjU5MiAyOTcuNTA4LDIzNC41OTIgQzI1NS45NzQsMjM0LjU5MiAyMjIuMzA0LDI2OC4yNjIgMjIyLjMwNCwzMDkuNzk2IEwyMjIuMzA0LDMwOS43OTYgWiBNMzgwLjgwNSwxOTEuMDMxIEMzODAuODA1LDg2LjA0MiAyOTUuMzkyLDAuNjI4IDE5MC40MDMsMC42MjggQzg1LjQxNCwwLjYyOCAwLDg2LjA0MiAwLDE5MS4wMzEgQzAsMjk2LjAyIDg1LjQxNCwzODEuNDMzIDE5MC40MDMsMzgxLjQzMyBDMjEyLjQ5OCwzODEuNDMzIDIzMy43MDgsMzc3LjYwOSAyNTMuNDU2LDM3MC42NTcgQzI2NS44NDUsMzc5LjY0MSAyODEuMDM0LDM4NSAyOTcuNTA4LDM4NSBDMzM5LjA0MiwzODUgMzcyLjcxMiwzNTEuMzMgMzcyLjcxMiwzMDkuNzk2IEMzNzIuNzEyLDI5Ni4wOTIgMzY4Ljk4OCwyODMuMjgzIDM2Mi41ODQsMjcyLjIxOSBDMzc0LjI1MSwyNDcuNTc1IDM4MC44MDUsMjIwLjA1OCAzODAuODA1LDE5MS4wMzEgTDM4MC44MDUsMTkxLjAzMSBaIiBpZD0iRmlsbC0xIiBmaWxsPSIjMDBCM0MxIiBtYXNrPSJ1cmwoI21hc2stMikiPjwvcGF0aD4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==' ); 
 
 	add_action( 'load-' . $homePageView, 'ct_oxygen_admin_home_page_css' );
-	
+
 	add_submenu_page( 	'ct_dashboard_page', 
 						'Home', 
 						'Home', 
@@ -97,17 +97,33 @@ function ct_templates_page() {
 		return;
 	}
 
+	if(oxygen_vsb_get_user_edit_mode() == "edit_only") {
+		
+		add_menu_page( 	'Oxygen', // page <title>
+					'Templates', // menu item name
+					'read', // capability
+					'edit.php?post_type=ct_template', // get param
+					'',
+					'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIzODFweCIgaGVpZ2h0PSIzODVweCIgdmlld0JveD0iMCAwIDM4MSAzODUiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+ICAgICAgICA8dGl0bGU+VW50aXRsZWQgMzwvdGl0bGU+ICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPiAgICA8ZGVmcz4gICAgICAgIDxwb2x5Z29uIGlkPSJwYXRoLTEiIHBvaW50cz0iMC4wNiAzODQuOTQgMzgwLjgwNSAzODQuOTQgMzgwLjgwNSAwLjYyOCAwLjA2IDAuNjI4Ij48L3BvbHlnb24+ICAgIDwvZGVmcz4gICAgPGcgaWQ9IlBhZ2UtMSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+ICAgICAgICA8ZyBpZD0iT3h5Z2VuLUljb24tQ01ZSyI+ICAgICAgICAgICAgPG1hc2sgaWQ9Im1hc2stMiIgZmlsbD0id2hpdGUiPiAgICAgICAgICAgICAgICA8dXNlIHhsaW5rOmhyZWY9IiNwYXRoLTEiPjwvdXNlPiAgICAgICAgICAgIDwvbWFzaz4gICAgICAgICAgICA8ZyBpZD0iQ2xpcC0yIj48L2c+ICAgICAgICAgICAgPHBhdGggZD0iTTI5Ny41MDgsMzQ5Ljc0OCBDMjc1LjQ0MywzNDkuNzQ4IDI1Ny41NTYsMzMxLjg2IDI1Ny41NTYsMzA5Ljc5NiBDMjU3LjU1NiwyODcuNzMxIDI3NS40NDMsMjY5Ljg0NCAyOTcuNTA4LDI2OS44NDQgQzMxOS41NzMsMjY5Ljg0NCAzMzcuNDYsMjg3LjczMSAzMzcuNDYsMzA5Ljc5NiBDMzM3LjQ2LDMzMS44NiAzMTkuNTczLDM0OS43NDggMjk3LjUwOCwzNDkuNzQ4IEwyOTcuNTA4LDM0OS43NDggWiBNMjIyLjMwNCwzMDkuNzk2IEMyMjIuMzA0LDMxMi4wMzkgMjIyLjQ0NywzMTQuMjQ3IDIyMi42MzksMzE2LjQ0MSBDMjEyLjMzLDMxOS4wOTIgMjAxLjUyOCwzMjAuNTA1IDE5MC40MDMsMzIwLjUwNSBDMTE5LjAxLDMyMC41MDUgNjAuOTI5LDI2Mi40MjMgNjAuOTI5LDE5MS4wMzEgQzYwLjkyOSwxMTkuNjM4IDExOS4wMSw2MS41NTcgMTkwLjQwMyw2MS41NTcgQzI2MS43OTQsNjEuNTU3IDMxOS44NzcsMTE5LjYzOCAzMTkuODc3LDE5MS4wMzEgQzMxOS44NzcsMjA2LjgzMyAzMTcuMDIsMjIxLjk3OCAzMTEuODE1LDIzNS45OSBDMzA3LjE3OSwyMzUuMDk3IDMwMi40MDQsMjM0LjU5MiAyOTcuNTA4LDIzNC41OTIgQzI1NS45NzQsMjM0LjU5MiAyMjIuMzA0LDI2OC4yNjIgMjIyLjMwNCwzMDkuNzk2IEwyMjIuMzA0LDMwOS43OTYgWiBNMzgwLjgwNSwxOTEuMDMxIEMzODAuODA1LDg2LjA0MiAyOTUuMzkyLDAuNjI4IDE5MC40MDMsMC42MjggQzg1LjQxNCwwLjYyOCAwLDg2LjA0MiAwLDE5MS4wMzEgQzAsMjk2LjAyIDg1LjQxNCwzODEuNDMzIDE5MC40MDMsMzgxLjQzMyBDMjEyLjQ5OCwzODEuNDMzIDIzMy43MDgsMzc3LjYwOSAyNTMuNDU2LDM3MC42NTcgQzI2NS44NDUsMzc5LjY0MSAyODEuMDM0LDM4NSAyOTcuNTA4LDM4NSBDMzM5LjA0MiwzODUgMzcyLjcxMiwzNTEuMzMgMzcyLjcxMiwzMDkuNzk2IEMzNzIuNzEyLDI5Ni4wOTIgMzY4Ljk4OCwyODMuMjgzIDM2Mi41ODQsMjcyLjIxOSBDMzc0LjI1MSwyNDcuNTc1IDM4MC44MDUsMjIwLjA1OCAzODAuODA1LDE5MS4wMzEgTDM4MC44MDUsMTkxLjAzMSBaIiBpZD0iRmlsbC0xIiBmaWxsPSIjMDBCM0MxIiBtYXNrPSJ1cmwoI21hc2stMikiPjwvcGF0aD4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==' ); 
+		
+		return;
+	}
+
 	add_submenu_page( 	'ct_dashboard_page', 
 						'Templates', 
 						'Templates', 
 						'read', 
 						'edit.php?post_type=ct_template');
-	
+
 }
 
 add_action( 'admin_enqueue_scripts', 'ct_templates_admin_scripts' );
 
 function ct_templates_admin_scripts($hook) {
+
+	if (!oxygen_vsb_current_user_can_full_access()) {
+		return;
+	}
 
 	global $post;
 
@@ -136,7 +152,7 @@ add_action('admin_menu', 'ct_export_import_page', 11);
 
 function ct_export_import_page() {
 
-	if(!oxygen_vsb_current_user_can_access()) {
+	if(!oxygen_vsb_current_user_can_full_access()) {
 		return;
 	}
 	
@@ -239,6 +255,33 @@ function oxygen_vsb_register_settings() {
    add_option( 'oxygen_vsb_full_page_block_category_label', "" );
    register_setting( 'oxygen_vsb_options_group_gutenberg', 'oxygen_vsb_full_page_block_category_label' );
 
+   add_option( 'oxygen_vsb_options_users_access_list', array() );
+   add_option( 'oxygen_vsb_options_users_access_enable_elements', array() );
+   add_option( 'oxygen_vsb_options_users_access_advanced_tab', array() );
+   add_option( 'oxygen_vsb_options_users_access_drag_n_drop', array() );
+   add_option( 'oxygen_vsb_options_users_access_enabled_elements', array() );
+   add_option( 'oxygen_vsb_options_users_access_disable_classes', array() );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_users_access_list' );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_users_access_enable_elements' );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_users_access_advanced_tab' );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_users_access_drag_n_drop' );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_users_access_enabled_elements' );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_users_access_reusable_parts' );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_users_access_design_library' );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_users_access_disable_classes' );
+
+   add_option( 'oxygen_vsb_options_role_access_enable_elements', array() );
+   add_option( 'oxygen_vsb_options_role_access_advanced_tab', array() );
+   add_option( 'oxygen_vsb_options_role_access_drag_n_drop', array() );
+   add_option( 'oxygen_vsb_options_role_access_enabled_elements', array() );
+   add_option( 'oxygen_vsb_options_role_access_disable_classes', array() );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_role_access_enable_elements' );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_role_access_advanced_tab' );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_role_access_drag_n_drop' );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_role_access_enabled_elements' );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_role_access_reusable_parts' );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_role_access_design_library' );
+   register_setting( 'oxygen_vsb_options_group_client_control', 'oxygen_vsb_options_role_access_disable_classes' );
 
    // Access related settings
    if(!defined('CT_FREE')) {
@@ -247,7 +290,7 @@ function oxygen_vsb_register_settings() {
 		remove_filter('editable_roles', 'oxygen_vsb_remove_admin_role');
 		foreach($roles as $role => $item) {
 			add_option( "oxygen_vsb_access_role_$role", false);
-	   		register_setting( 'oxygen_vsb_options_group_role', "oxygen_vsb_access_role_$role");
+	   		register_setting( 'oxygen_vsb_options_group_client_control', "oxygen_vsb_access_role_$role");
 		}
 	}
 
@@ -262,7 +305,7 @@ function oxygen_vsb_register_settings() {
 	
 	foreach($postTypes as $key => $item) {
 		add_option( "oxygen_vsb_ignore_post_type_$key", false);
-   		register_setting( 'oxygen_vsb_options_group_posttype', "oxygen_vsb_ignore_post_type_$key");
+   		register_setting( 'oxygen_vsb_options_group_client_control', "oxygen_vsb_ignore_post_type_$key");
 	}
 
 }
@@ -399,8 +442,7 @@ function oxygen_vsb_options_page() {
 <div class="wrap">
 	<h2 class="nav-tab-wrapper">
 	    <a href="?page=oxygen_vsb_settings&tab=general" class="nav-tab<?php echo ($tab === false || $tab == 'general') ? ' nav-tab-active':'';?>">General</a>
-	    <a href="?page=oxygen_vsb_settings&tab=role_manager" class="nav-tab<?php echo $tab == 'role_manager'?' nav-tab-active':'';?>">Role Manager</a>
-	    <a href="?page=oxygen_vsb_settings&tab=posttype_manager" class="nav-tab<?php echo $tab == 'posttype_manager'?' nav-tab-active':'';?>">Post Type Manager</a>
+	    <a href="?page=oxygen_vsb_settings&tab=client_control" class="nav-tab<?php echo $tab == 'client_control'?' nav-tab-active':'';?>">Client Control</a>
 	    <a href="?page=oxygen_vsb_settings&tab=security_manager" class="nav-tab<?php echo $tab == 'security_manager'?' nav-tab-active':'';?>">Security</a>
 	    <a href="?page=oxygen_vsb_settings&tab=svg_manager" class="nav-tab<?php echo $tab == 'svg_manager'?' nav-tab-active':'';?>">SVG Sets</a>
 	    <a href="?page=oxygen_vsb_settings&tab=typekit_manager" class="nav-tab<?php echo $tab == 'typekit_manager'?' nav-tab-active':'';?>">Typekit</a>
@@ -432,12 +474,8 @@ function oxygen_vsb_options_page() {
 				oxygen_vsb_options_library_manager();
 			break;
 
-			case 'role_manager':
-				oxygen_vsb_options_role_manager_page();
-			break;
-
-			case 'posttype_manager':
-				oxygen_vsb_options_posttype_manager_page();
+			case 'client_control':
+				oxygen_vsb_options_client_control_page();
 			break;
 
 			case 'security_manager':
@@ -679,9 +717,62 @@ function oxygen_vsb_options_bloat_eliminator_page() {
 	<?php
 }
 
-function oxygen_vsb_options_role_manager_page() {
+function oxygen_vsb_options_client_control_page() {
+
+	$users_access_list = get_option("oxygen_vsb_options_users_access_list", array());
+	if (!is_array($users_access_list)) $users_access_list = array();
+	$users_access_enable_elements = get_option("oxygen_vsb_options_users_access_enable_elements", array());
+	$users_access_advanced_tab = get_option("oxygen_vsb_options_users_access_advanced_tab", array());
+	$users_access_drag_n_drop = get_option("oxygen_vsb_options_users_access_drag_n_drop", array());
+	$users_access_enabled_elements = get_option("oxygen_vsb_options_users_access_enabled_elements", array());
+	$users_access_reusable_parts = get_option("oxygen_vsb_options_users_access_reusable_parts", array());
+	$users_access_design_library = get_option("oxygen_vsb_options_users_access_design_library", array());
+	$users_access_disable_classes = get_option("oxygen_vsb_options_users_access_disable_classes", array());
+
+	$role_access_enable_elements = get_option("oxygen_vsb_options_role_access_enable_elements", array());
+	$role_access_advanced_tab = get_option("oxygen_vsb_options_role_access_advanced_tab", array());
+	$role_access_drag_n_drop = get_option("oxygen_vsb_options_role_access_drag_n_drop", array());
+	$role_access_enabled_elements = get_option("oxygen_vsb_options_role_access_enabled_elements", array());
+	$role_access_reusable_parts = get_option("oxygen_vsb_options_role_access_reusable_parts", array());
+	$role_access_design_library = get_option("oxygen_vsb_options_role_access_design_library", array());
+	$role_access_disable_classes = get_option("oxygen_vsb_options_role_access_disable_classes", array());
+
+
+	if ( !is_array($role_access_enable_elements)) {
+		$role_access_enable_elements = array();
+	}
+	if ( !is_array($role_access_advanced_tab)) {
+		$role_access_advanced_tab = array();
+	}
+	if ( !is_array($role_access_drag_n_drop)) {
+		$role_access_drag_n_drop = array();
+	}
+	if ( !is_array($role_access_enabled_elements)) {
+		$role_access_enabled_elements = array();
+	}
+	if ( !is_array($role_access_reusable_parts)) {
+		$role_access_reusable_parts = array();
+	}
+	if ( !is_array($role_access_design_library)) {
+		$role_access_design_library = array();
+	}
+	if ( !is_array($role_access_disable_classes)) {
+		$role_access_disable_classes = array();
+	}
+
+	global $oxygen_vsb_components;
+
+	$all_oxygen_components = array();
+	foreach ($oxygen_vsb_components as $component) {
+		
+		if (!isset($component->options) || !is_array($component->options)) continue;
+		if (!isset($component->options['tag']) || !isset($component->options['name'])) continue;
+		if (in_array($component->options['tag'], array('ct_widget','ct_sidebar','ct_li','ct_svg_icon'))) continue;
+		
+		$all_oxygen_components[$component->options['tag']] = $component->options['name'];
+	}
 	?>
-  
+
 	<h2>Role Manager</h2>
 	<?php do_action('oxygen_vsb_before_settings_page');?>
 	<p>
@@ -689,48 +780,143 @@ function oxygen_vsb_options_role_manager_page() {
 	</p>
 
 	<form method="post" action="options.php">
-		<?php settings_fields( 'oxygen_vsb_options_group_role' ); ?>
-	    <?php do_settings_sections( 'oxygen_vsb_options_group_role' ); ?>
-		<table>
+		<?php settings_fields( 'oxygen_vsb_options_group_client_control' ); ?>
+	    <?php do_settings_sections( 'oxygen_vsb_options_group_client_control' ); ?>
+		<table id="oxygen_vsb_access_role_settings">
 		<?php 
-			
-			
 			
 			add_filter('editable_roles', 'oxygen_vsb_remove_admin_role');
 			$roles = get_editable_roles();
 			remove_filter('editable_roles', 'oxygen_vsb_remove_admin_role');
-
+			
 			foreach($roles as $role => $item) {
-				
 				?>
-				<tr valign="top">
+				<tr valign="top" class="oxygen_role_access_settings_row">
 					<th scope="row"><label for="oxygen_vsb_access_role_<?php echo esc_attr($role);?>"><?php echo esc_html($item['name']); ?></label></th>
 					<td>
-						<select name="oxygen_vsb_access_role_<?php echo esc_attr($role);?>" id="oxygen_vsb_access_role_<?php echo esc_attr($role);?>">
+						<select name="oxygen_vsb_access_role_<?php echo esc_attr($role);?>" id="oxygen_vsb_access_role_<?php echo esc_attr($role);?>" class="oxygen_vsb_access_role_select">
 							<option value="false" >No Access</option>
+							<?php if (oxygen_vsb_is_agency_bundle()) : ?>
+							<option value="edit_only" <?php selected(get_option("oxygen_vsb_access_role_$role"), "edit_only"); ?>>Edit Only</option>
+							<?php endif; ?>
 							<option value="true" <?php selected(get_option("oxygen_vsb_access_role_$role"), "true"); ?>>Full Access</option>
 						</select>
+						<div class="oxygen_role_access_edit_only_sub_options">
+							<label><input type="checkbox" class="oxygen_vsb_options_role_access_enable_elements" name="oxygen_vsb_options_role_access_enable_elements[<?php echo esc_attr($role);?>][]" <?php checked($role_access_enable_elements[$role][0], "true"); ?> value="true"/>Enable Elements<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Allows user to access a specific element in the +Add Pane</span></label>
+							<div>
+								<select name="oxygen_vsb_options_role_access_enabled_elements[<?php echo esc_attr($role); ?>][]" class="oxygen_user_access_enabled_elements" multiple="multiple">
+									<?php foreach ($all_oxygen_components as $tag => $name) : ?>
+									<option value="<?php echo $tag; ?>" <?php if(is_array($role_access_enabled_elements) && is_array($role_access_enabled_elements[$role])) selected(in_array($tag, $role_access_enabled_elements[$role])); ?>><?php echo $name; ?></option>
+									<?php endforeach; ?>
+								</select>
+							</div>
+							<label><input type="checkbox" class="oxygen_vsb_options_role_access_advanced_tab" name="oxygen_vsb_options_role_access_advanced_tab[<?php echo esc_attr($role);?>][]" <?php checked($role_access_advanced_tab[$role][0], "true"); ?> value="true"/>Enable Advanced Tab</label><br/>
+							<label><input type="checkbox" class="oxygen_vsb_options_role_access_drag_n_drop" name="oxygen_vsb_options_role_access_drag_n_drop[<?php echo esc_attr($role);?>][]" <?php checked($role_access_drag_n_drop[$role][0], "true"); ?> value="true"/>Enable Drag & Drop</label><br/>
+							<label><input type="checkbox" class="oxygen_vsb_options_role_access_reusable_parts" name="oxygen_vsb_options_role_access_reusable_parts[<?php echo esc_attr($role);?>][]" <?php checked($role_access_reusable_parts[$role][0], "true"); ?> value="true"/>Enable Reusable Parts</label><br/>
+							<label><input type="checkbox" class="oxygen_vsb_options_role_access_design_library" name="oxygen_vsb_options_role_access_design_library[<?php echo esc_attr($role);?>][]" <?php checked($role_access_design_library[$role][0], "true"); ?> value="true"/>Enable Design Library</label><br/>
+							<label><input type="checkbox" class="oxygen_vsb_options_role_access_disable_classes" name="oxygen_vsb_options_role_access_disable_classes[<?php echo esc_attr($role);?>][]" <?php checked($role_access_disable_classes[$role][0], "true"); ?> value="true"/>Disable Classes</label>
+						</div>
 					</td>
 				</tr>
 				<?php
 			}
 		 ?>
 		</table>
-		 <?php submit_button(); ?>
-	  </form>
 
-	<?php
-}
+		<h2>Per User Access</h2>
+		<?php do_action('oxygen_vsb_before_settings_page');?>
+		<p>
+			This override the above role-based restrictions. 
+		</p>
 
-function oxygen_vsb_options_posttype_manager_page() {
-	?>
-  
-	<h2>Post Type Manager</h2>
+		<div id="oxygen_user_access_table">
+			<div id="oxygen_user_access_placeholder">
+					<a href="#" class="oxygen_user_access_remove_user" title="<?php _e("Remove Access Rule","oxygen"); ?>"></a>
+					Grant
+					<select name="oxygen_user_access_user_select" class="oxygen_user_access_user_select">
+					<option value=""></option>
+					<?php foreach(get_users() as $registered_user) : 
+						if ($registered_user->ID==get_current_user_id()){
+							continue;
+						}
+						?>
+						<option value="<?php echo $registered_user->ID; ?>"><?php echo $registered_user->data->user_login; ?></option>
+					<?php endforeach; ?>
+					</select>
+					access level
+					<select class="oxygen_user_access_level_select">
+						<option value="false">No Access</option>
+						<?php if (oxygen_vsb_is_agency_bundle()) : ?>
+						<option value="edit_only">Edit Only</option>
+						<?php endif; ?>
+						<option value="full">Full Access</option>
+					</select>
+				<div class="oxygen_user_access_edit_only_sub_options">
+					<label><input type="checkbox" class="oxygen_vsb_options_users_access_enable_elements" value="true"/>Enable Elements<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Allows user to access a specific element in the +Add Pane</span></label>
+					<div>
+						<select name="" class="oxygen_user_access_enabled_elements" multiple="multiple">
+							<?php foreach ($all_oxygen_components as $tag => $name) : ?>
+								<option value="<?php echo $tag; ?>"><?php echo $name; ?></option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+					<label><input type="checkbox" class="oxygen_vsb_options_users_access_advanced_tab" value="true"/>Enable Advanced Tab</label><br/>
+					<label><input type="checkbox" class="oxygen_vsb_options_users_access_drag_n_drop" value="true"/>Enable Drag & Drop</label><br/>
+					<label><input type="checkbox" class="oxygen_vsb_options_users_access_reusable_parts" value="true"/>Enable Reusable Parts</label><br/>
+					<label><input type="checkbox" class="oxygen_vsb_options_users_access_design_library" value="true"/>Enable Design Library</label><br/>
+					<label><input type="checkbox" class="oxygen_vsb_options_users_access_disable_classes" value="true"/>Disable Classes</label>
+				</div>
+			</div>
+			<?php foreach ($users_access_list as $user_id => $user_with_access) : ?>
+			<div class="oxygen-user-access-settings-row">
+				<a href="#" class="oxygen_user_access_remove_user" title="<?php _e("Remove Access Rule","oxygen"); ?>"></a>
+				Grant
+				<select name="oxygen_user_access_user_select" class="oxygen_user_access_user_select">
+				<?php foreach(get_users() as $registered_user) : 
+					if ($registered_user->ID==get_current_user_id()){
+						continue;
+					}
+					?>
+					<option value="<?php echo $registered_user->ID; ?>" <?php selected($registered_user->ID, $user_id); ?>">
+						<?php echo $registered_user->data->user_login; ?>
+					</option>
+				<?php endforeach; ?>
+				</select>
+				access level
+				<select name="oxygen_vsb_options_users_access_list[<?php echo esc_attr($user_id); ?>][]" class="oxygen_user_access_level_select">
+					<option value="false">No Access</option>
+					<?php if (oxygen_vsb_is_agency_bundle()) : ?>
+					<option value="edit_only" <?php selected($users_access_list[$user_id][0], "edit_only"); ?>>Edit Only</option>
+					<?php endif; ?>
+					<option value="true" <?php selected($users_access_list[$user_id][0], "true"); ?>>Full Access</option>
+				</select></br>
+				<div class="oxygen_user_access_edit_only_sub_options">
+					<label><input type="checkbox" class="oxygen_vsb_options_users_access_enable_elements" name="oxygen_vsb_options_users_access_enable_elements[<?php echo esc_attr($user_id); ?>][]" <?php checked($users_access_enable_elements[$user_id][0], "true"); ?> value="true"/>Enable Elements<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Allows user to access a specific element in the +Add Pane</span></label>
+					<div>
+						<select name="oxygen_vsb_options_users_access_enabled_elements[<?php echo esc_attr($user_id); ?>][]" class="oxygen_user_access_enabled_elements" multiple="multiple">
+							<?php foreach ($all_oxygen_components as $tag => $name) : ?>
+							<option value="<?php echo $tag; ?>" <?php if(is_array($users_access_enabled_elements[$user_id])) selected(in_array($tag, $users_access_enabled_elements[$user_id])); ?>><?php echo $name; ?></option>
+							<?php endforeach; ?>
+						</select>
+					</div>
+					<label><input type="checkbox" class="oxygen_vsb_options_users_access_advanced_tab" name="oxygen_vsb_options_users_access_advanced_tab[<?php echo esc_attr($user_id); ?>][]" <?php checked($users_access_advanced_tab[$user_id][0], "true"); ?> value="true"/>Enable Advanced Tab</label><br/>
+					<label><input type="checkbox" class="oxygen_vsb_options_users_access_drag_n_drop" name="oxygen_vsb_options_users_access_drag_n_drop[<?php echo esc_attr($user_id); ?>][]" <?php checked($users_access_drag_n_drop[$user_id][0], "true"); ?> value="true"/>Enable Drag & Drop</label><br/>
+					<label><input type="checkbox" class="oxygen_vsb_options_users_access_reusable_parts" name="oxygen_vsb_options_users_access_reusable_parts[<?php echo esc_attr($user_id); ?>][]" <?php checked($users_access_reusable_parts[$user_id][0], "true"); ?> value="true"/>Enable Reusable Parts</label><br/>
+					<label><input type="checkbox" class="oxygen_vsb_options_users_access_design_library" name="oxygen_vsb_options_users_access_design_library[<?php echo esc_attr($user_id); ?>][]" <?php checked($users_access_design_library[$user_id][0], "true"); ?> value="true"/>Enable Design Library</label><br/>
+					<label><input type="checkbox" class="oxygen_vsb_options_users_access_disable_classes" name="oxygen_vsb_options_users_access_disable_classes[<?php echo esc_attr($user_id); ?>][]" <?php checked($users_access_disable_classes[$user_id][0], "true"); ?> value="true"/>Disable Classes</label>
+				</div>
+			</div>
+			<?php endforeach; ?>
+		</div>
+		<table>
+			<tr>
+				<a id="oxygen_user_access_add_user" href="#"><?php _e("Add User", "oxygen"); ?></a>
+			</tr>
+		</table>
+
+		<h2>Post Type Manager</h2>
 	
-	<form method="post" action="options.php">
 		<p>Hide Oxygen metabox on the following post types:</p>
-		<?php settings_fields( 'oxygen_vsb_options_group_posttype' ); ?>
-	    <?php do_settings_sections( 'oxygen_vsb_options_group_posttype' ); ?>
 		<table>
 		<?php 
 			
@@ -824,7 +1010,7 @@ function ct_cache_page_callback() {
 
 function ct_admin_settings() {
 	
-	if(!oxygen_vsb_current_user_can_access()) {
+	if(!oxygen_vsb_current_user_can_full_access()) {
 		return;
 	}
 
@@ -1042,4 +1228,79 @@ function oxygen_vsb_sign_shortcodes_page() {
 	</script>
 
 	<?php
+}
+
+add_action('admin_footer', 'edit_with_oxygen_buttons_for_edit_mode');
+function edit_with_oxygen_buttons_for_edit_mode() {
+
+	if (oxygen_vsb_current_user_can_full_access()) {
+		return;
+	}
+	
+	global $post;
+	$screen = get_current_screen();
+
+	// Post edit mode locked
+	$post_locked = get_post_meta( $post->ID, 'oxygen_lock_post_edit_mode', true );
+	if ($post_locked=="true") { ?>
+		
+		<a class="oxygen-edit-mode-button oxygen-edit-mode-button-disabled" href="#" title="<?php _e("Editing is locked for this post.", "oxygen"); ?>">
+			<img src='<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/Oxygen-O.png'/>
+		</a>
+		<?php if (isset($screen->id)&&($screen->id=="post"||$screen->id=="page"||$screen->id=="ct_template")) {?>
+		<a class="oxygen-edit-mode-button-non-gutenberg page-title-action oxygen-edit-mode-button-disabled" href="#" title="<?php _e("Editing is locked for this post.", "oxygen"); ?>">
+			<?php _e("Edit with Oxygen","oxygen"); ?>
+		</a>
+		<?php }
+
+		return;
+	}
+
+	$edit_with_oxygen_link = oxygen_add_posts_quick_action_link(array(), $post, "array");
+
+	$template_locked = false;
+	if (isset($edit_with_oxygen_link["template"])) {
+		$template_locked = get_post_meta( $edit_with_oxygen_link["template"], 'oxygen_lock_post_edit_mode', true );
+	}
+
+	if (is_oxygen_edit_post_locked()||$template_locked) { 
+		
+		if ($template_locked) {
+			$text = __("Editing is locked for template.", "oxygen");
+		} else {
+			$text = __("Oxygen is open in another tab or by another user.", "oxygen");
+		}
+		
+		?>
+		
+		<a class="oxygen-edit-mode-button oxygen-edit-mode-button-disabled" href="#" title="<?php echo $text; ?>">
+			<img src='<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/Oxygen-O.png'/>
+		</a>
+		<?php if (isset($screen->id)&&($screen->id=="post"||$screen->id=="page"||$screen->id=="ct_template")) {?>
+		<a class="oxygen-edit-mode-button-non-gutenberg page-title-action oxygen-edit-mode-button-disabled" href="#" title="<?php echo $text; ?>">
+			<?php _e("Edit with Oxygen","oxygen"); ?>
+		</a>
+		<?php }
+		
+		return;
+	}
+
+	if (!isset($edit_with_oxygen_link["url"])||!isset($edit_with_oxygen_link["text"])) {
+		return;
+	}	
+
+	$extra_class = "";
+	if ($edit_with_oxygen_link["text"]=="Edit Template") {
+		$extra_class = "oxygen-edit-mode-button-template";
+	}
+
+	?>
+	<a class="oxygen-edit-mode-button <?php echo $extra_class; ?>" href="<?php echo $edit_with_oxygen_link["url"] ?>" title="<?php echo $edit_with_oxygen_link["text"] ?>">
+		<img src='<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/Oxygen-O.png'/>
+	</a>
+	<?php if (isset($screen->id)&&($screen->id=="post"||$screen->id=="page"||$screen->id=="ct_template")) {?>
+	<a class="oxygen-edit-mode-button-non-gutenberg page-title-action <?php echo $extra_class; ?>" href="<?php echo $edit_with_oxygen_link["url"] ?>" title="<?php echo $edit_with_oxygen_link["text"] ?>">
+		<?php echo $edit_with_oxygen_link["text"]; ?>
+	</a>
+	<?php }
 }

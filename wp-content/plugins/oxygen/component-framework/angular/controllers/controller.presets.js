@@ -48,8 +48,6 @@ CTFrontendBuilder.controller("ControllerPresets", function($scope, $parentScope,
 
         $scope.newPresetName = "";
         $scope.currentPresetKey = presetsLength - 1; 
-
-        console.log($scope.elementPresets);
     }
 
 

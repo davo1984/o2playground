@@ -91,13 +91,6 @@ class Oxygen_VSB_Search_Form extends CT_Component {
             error_reporting($error_reporting);
         }
 
-        // output template CSS for builder preview only
-        if ((isset($atts['preview']) && $atts['preview']=='true') || (isset($_REQUEST['action']) && $_REQUEST['action'] == "ct_get_post_data")) {
-            echo "<style type=\"text/css\">";
-            echo file_get_contents(plugin_dir_path(__FILE__)."search-form/search-form.css");
-            echo "</style>\r\n";
-        }
-
         return ob_get_clean();
     }
 

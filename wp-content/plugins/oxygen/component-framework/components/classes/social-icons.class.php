@@ -184,18 +184,28 @@ Class Oxy_Social_Icons extends CT_Component {
 
 		$options = $atts['original'];
 
+		if ( !isset( $options["icon-style"] ) ) {
+			$options["icon-style"] = "";
+		}
+
 		ob_start(); ?>
 
 		#<?php echo $selector; ?>.oxy-social-icons {
+			<?php if ( isset( $options["icon-layout"] ) ) : ?>
 			flex-direction: <?php echo $options["icon-layout"]; ?>;
+			<?php endif; ?>
+			<?php if ( isset( $options["icon-space-between-icons"] ) ) : ?>
 			margin-right: -<?php echo $options["icon-space-between-icons"]; ?>px;
 			margin-bottom: -<?php echo $options["icon-space-between-icons"]; ?>px;
+			<?php endif; ?>
 		}
 
 		#<?php echo $selector; ?>.oxy-social-icons a {
 			font-size: <?php echo $options["icon-size"]; ?>px;
+			<?php if ( isset( $options["icon-space-between-icons"] ) ) : ?>
 			margin-right: <?php echo $options["icon-space-between-icons"]; ?>px;
 			margin-bottom: <?php echo $options["icon-space-between-icons"]; ?>px;
+			<?php endif; ?>
 			<?php if ($options["icon-style"] == 'circle') {
 				echo "border-radius: 50%;";
 			} else if ($options["icon-style"] == 'square') {
@@ -203,12 +213,12 @@ Class Oxy_Social_Icons extends CT_Component {
 			} else {
 				echo  $options["icon-style"];
 			} ?>
-			<?php if ($options["icon-style"] != 'blank') { ?>
+			<?php if ($options["icon-style"] != 'blank' && isset($options["icon-background-color"])) { ?>
 				background-color: <?php echo oxygen_vsb_get_global_color_value($options["icon-background-color"]); ?>;
 			<?php } ?>
 		}
 		
-		<?php if ($options["icon-style"] != 'blank') { ?>
+		<?php if ($options["icon-style"] != 'blank' && isset($options["icon-background-hover-color"])) { ?>
 		#<?php echo $selector; ?>.oxy-social-icons a:hover {		
 			background-color: <?php echo oxygen_vsb_get_global_color_value($options["icon-background-hover-color"]); ?>;
 		}
@@ -216,7 +226,7 @@ Class Oxy_Social_Icons extends CT_Component {
 
 		<?php
 
-		if ($options["icon-use-brand-colors"]=="yes") {
+		if ( isset( $options["icon-use-brand-colors"] ) && $options["icon-use-brand-colors"]=="yes") {
 			if ($options["icon-style"] != "blank") {
 				foreach ($this->network_colors as $network => $color) { ?>
 					#<?php echo $selector; ?>.oxy-social-icons a.oxy-social-icons-<?php echo $network; ?> {

@@ -137,6 +137,10 @@ function ct_export_import_callback() {
 	$default_presets = apply_filters("oxygen_vsb_element_presets_defaults", array());
 
 	foreach ($default_presets as $element_name => $presets) {
+        if (empty($element_presets[$element_name])) {
+            continue;
+        }
+
 		foreach ($presets as $key => $preset) {
 			$index = array_search($preset, $element_presets[$element_name]);
 			if ($index !== false) {

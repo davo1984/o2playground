@@ -2019,9 +2019,7 @@ CTFrontendBuilderUI.controller("ControllerUI", function($controller, $anchorScro
         })
 
         $scope.iframeScope.component.options[id]['model']['custom-attributes'] = customAttributes;
-
         $scope.iframeScope.setOption(id, name, 'custom-attributes');
-        
     }
 
     /**

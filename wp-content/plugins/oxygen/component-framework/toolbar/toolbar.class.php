@@ -56,7 +56,7 @@ Class CT_Toolbar {
 											),
 
 											"code-php" => array (
-												"heading" 	=> __("PHP & HTML", "oxygen"),
+												"heading" 	=> __("PHP", "oxygen"),
 												"tab_icon" 	=> "borders",
 											),
 
@@ -249,6 +249,7 @@ Class CT_Toolbar {
 			<div class='oxygen-active-element-icons'
 				ng-show="iframeScope.component.active.id < 100000 && !iframeScope.isEditing('style-sheet') && !iframeScope.isEditing('custom-selector') && !iframeScope.isBuiltinComponent()">
 
+				<?php if (oxygen_vsb_current_user_can_full_access()) : ?>
 				<div class="oxy-condition-menu-container">
 					<img src='<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/currently-editing/condition.svg'
 						title="<?php _e("Condition Settings", "oxygen"); ?>"
@@ -294,6 +295,7 @@ Class CT_Toolbar {
 						</div>
 					</div>
 				</div>
+				<?php endif; ?>
 
 				<img src='<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/currently-editing/link.svg'
 					title="<?php _e("Link Settings", "oxygen"); ?>"
@@ -301,19 +303,26 @@ Class CT_Toolbar {
 					class="oxygen-link-button"
 					ng-class="{'ct-link-button-highlight' : iframeScope.getLinkId()}"
 					ng-show="!isActiveName('ct_selector') && !isActiveName('ct_widget') && !isActiveName('ct_shortcode') && !isActiveName('ct_code_block') && iframeScope.component.active.parent.name !== 'oxy_dynamic_list'"
-					ng-click="processLink()"/>					
+					ng-click="processLink()"/>
 
+				<?php if (oxygen_vsb_current_user_can_full_access()||oxygen_vsb_user_has_enabled_elements()) : ?>
 				<img src='<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/currently-editing/duplicate.svg'
 					title="<?php _e("Duplicate Component", "oxygen"); ?>"
-					ng-if="iframeScope.component.active.name !== 'ct_if_wrap' && iframeScope.component.active.name !== 'ct_else_wrap'"
+					<?php if (!oxygen_vsb_current_user_can_full_access()&&oxygen_vsb_user_has_enabled_elements()) : ?>
+					ng-if="iframeScope.isElementEnabledForUser()"
+					<?php endif; ?>
 					ng-show="iframeScope.component.active.id > 0 && iframeScope.component.active.name != 'ct_span'"
 					ng-click="iframeScope.duplicateComponent()"/>
 
 				<img src='<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/currently-editing/delete.svg'
 					title="<?php _e("Remove Component", "oxygen"); ?>"
-					ng-if="iframeScope.component.active.name !== 'ct_if_wrap' && iframeScope.component.active.name !== 'ct_else_wrap'"
+					<?php if (!oxygen_vsb_current_user_can_full_access()&&oxygen_vsb_user_has_enabled_elements()) : ?>
+					ng-if="iframeScope.isElementEnabledForUser()"
+					<?php endif; ?>
 					ng-show="iframeScope.component.active.id > 0 && !isActiveName('oxy_header_left') && !isActiveName('oxy_header_center') && !isActiveName('oxy_header_right')"
 					ng-click="iframeScope.removeActiveComponent()"/>
+				<?php endif; ?>
+
 			</div>
 		</div>
 		<!-- .oxygen-active-element -->
@@ -354,6 +363,7 @@ Class CT_Toolbar {
 			<!-- .oxygen-media-query-box -->
 
 			<div class='oxygen-select oxygen-active-selector-box-wrapper'>
+				<?php if (oxygen_vsb_user_can_use_classes() || oxygen_vsb_current_user_can_full_access()) : ?>
 				<div class='oxygen-active-selector-box'
 					ng-if="iframeScope.isNotSelectedYet(iframeScope.component.active.id)&&!iframeScope.isEditing('custom-selector')"
 					ng-click="iframeScope.onSelectorDropdown()">
@@ -372,7 +382,12 @@ Class CT_Toolbar {
 					<input type='text' spellcheck="false"
 						ng-show="iframeScope.isEditing('id')"
 						ng-model="iframeScope.component.options[iframeScope.component.active.id]['selector']"
-						ng-change="iframeScope.setOption(iframeScope.component.active.id, iframeScope.component.active.name, 'selector')"/>
+						<?php if (oxygen_vsb_current_user_can_full_access()) { ?>
+						ng-change="iframeScope.setOption(iframeScope.component.active.id, iframeScope.component.active.name, 'selector')"
+						<?php } else { ?>
+						readonly
+						<?php } ?>
+						/>
 
 					<input type="text" spellcheck="false"
 						ng-show="iframeScope.isEditing('class')&&!iframeScope.isEditing('custom-selector')"
@@ -388,28 +403,6 @@ Class CT_Toolbar {
 						{{(iframeScope.currentState=="original") ? "state" : ":"+iframeScope.currentState}}
 					</div>
 				</div>
-
-				<ul class="oxygen-states-dropdown">
-					<li title="<?php _e("Edit original state", "oxygen"); ?>"
-						ng-click="iframeScope.switchState('original');">
-							<?php _e("original", "oxygen"); ?>
-					</li>
-					<li title="<?php _e("Edit this state", "oxygen"); ?>"
-						ng-repeat="state in iframeScope.getComponentStatesList()"
-						ng-click="iframeScope.switchState('original'); iframeScope.switchState(state);"
-						ng-class="{'oxy-styles-present':iframeScope.isStateHasOptions(state)}">
-							<div>:{{state}}</div>
-							<img src='<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/remove_icon.svg'
-								title="<?php _e("Remove state from component", "oxygen"); ?>"
-								ng-click="iframeScope.tryDeleteComponentState(state,$event)"/>
-
-					<li ng-click="iframeScope.addState()">
-						<span class="oxygen-states-dropdown-add-state">
-							<?php _e("add state...", "oxygen"); ?>
-						</span>
-					</li>
-				</ul>
-				<!-- .oxygen-states-dropdown -->
 
 				<ul class="oxygen-classes-dropdown"
 					ng-if="!iframeScope.isEditing('custom-selector')">
@@ -504,6 +497,39 @@ Class CT_Toolbar {
 				
 				</ul>
 				<!-- .oxygen-classes-dropdown -->
+				<?php else : ?>
+				<div class='oxygen-active-selector-box'>
+					<div class='oxygen-active-selector-box-id'>id</div>
+					<input type='text' spellcheck="false" readonly
+						ng-model="iframeScope.component.options[iframeScope.component.active.id]['selector']"/>
+					<div class='oxygen-active-selector-box-state'
+						ng-class="{'oxy-styles-present' : iframeScope.isStatesHasOptions()}">
+						{{(iframeScope.currentState=="original") ? "state" : ":"+iframeScope.currentState}}
+					</div>
+				</div>
+				<?php endif; ?>
+
+				<ul class="oxygen-states-dropdown">
+					<li title="<?php _e("Edit original state", "oxygen"); ?>"
+						ng-click="iframeScope.switchState('original');">
+							<?php _e("original", "oxygen"); ?>
+					</li>
+					<li title="<?php _e("Edit this state", "oxygen"); ?>"
+						ng-repeat="state in iframeScope.getComponentStatesList()"
+						ng-click="iframeScope.switchState('original'); iframeScope.switchState(state);"
+						ng-class="{'oxy-styles-present':iframeScope.isStateHasOptions(state)}">
+							<div>:{{state}}</div>
+							<img src='<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/remove_icon.svg'
+								title="<?php _e("Remove state from component", "oxygen"); ?>"
+								ng-click="iframeScope.tryDeleteComponentState(state,$event)"/>
+
+					<li ng-click="iframeScope.addState()">
+						<span class="oxygen-states-dropdown-add-state">
+							<?php _e("add state...", "oxygen"); ?>
+						</span>
+					</li>
+				</ul>
+				<!-- .oxygen-states-dropdown -->
 
 				<div class='oxygen-back-to-selector-detector'
 					ng-if="iframeScope.isEditing('custom-selector')&&!iframeScope.isEditing('class')&&disableSelectorDetectorMode"
@@ -630,6 +656,11 @@ Class CT_Toolbar {
 	function advanced_settings() {
 
 		foreach ( $this->options['advanced'] as $key => $tab ) :
+
+			if (!oxygen_vsb_current_user_can_full_access() && in_array($key,array("custom-css","custom-js","custom-php","code-css","code-js","code-php"))) {
+				continue;
+			}
+
 			$ng_show = '';
 			//$ng_click = ( $key == "cssjs" ) ? "possibleSwitchToCodeEditor('advanced', '$key')" : "switchTab('advanced', '$key');";
 			$ng_class = "iframeScope.isTabHasOptions('$key')";
@@ -835,26 +866,7 @@ Class CT_Toolbar {
 							<input type="text" spellcheck="false" 
 								ng-model="$parent.iframeScope.globalSettings.headings['<?php echo $heading; ?>']['font-size']" 
 								ng-model-options="{ debounce: 10 }">
-							<div class="oxygen-measure-box-unit-selector">
-								<div class="oxygen-measure-box-selected-unit">{{$parent.iframeScope.globalSettings.headings['<?php echo $heading; ?>']['font-size-unit']}}</div>
-								<div class="oxygen-measure-box-units">
-									<div class="oxygen-measure-box-unit oxygen-measure-box-unit-active" 
-										ng-click="$parent.iframeScope.globalSettings.headings['<?php echo $heading; ?>']['font-size-unit'] = 'px'" 
-										ng-class="{'oxygen-measure-box-unit-active':$parent.iframeScope.globalSettings.headings['<?php echo $heading; ?>']['font-size-unit']=='px'}">
-											px
-									</div>
-									<div class="oxygen-measure-box-unit" 
-										ng-click="$parent.iframeScope.globalSettings.headings['<?php echo $heading; ?>']['font-size-unit'] = '%'" 
-										ng-class="{'oxygen-measure-box-unit-active':$parent.iframeScope.globalSettings.headings['<?php echo $heading; ?>']['font-size-unit']=='%'}">
-											%
-									</div>
-									<div class="oxygen-measure-box-unit" 
-										ng-click="$parent.iframeScope.globalSettings.headings['<?php echo $heading; ?>']['font-size-unit'] = 'em'" 
-										ng-class="{'oxygen-measure-box-unit-active':$parent.iframeScope.globalSettings.headings['<?php echo $heading; ?>']['font-size-unit']=='em'}">
-											em
-									</div>
-								</div>
-							</div>
+                            <?php self::global_measure_box_unit_selector("global", "headings.$heading.font-size", "px,%,em") ?>
 						</div>
 					</div>
 				</div>
@@ -1126,26 +1138,7 @@ Class CT_Toolbar {
 						<input type="text" spellcheck="false" 
 							ng-model="$parent.iframeScope.globalSettings.body_text['font-size']" 
 							ng-model-options="{ debounce: 10 }">
-						<div class="oxygen-measure-box-unit-selector">
-							<div class="oxygen-measure-box-selected-unit">{{$parent.iframeScope.globalSettings.body_text['font-size-unit']}}</div>
-							<div class="oxygen-measure-box-units">
-								<div class="oxygen-measure-box-unit oxygen-measure-box-unit-active" 
-									ng-click="$parent.iframeScope.globalSettings.body_text['font-size-unit'] = 'px'" 
-									ng-class="{'oxygen-measure-box-unit-active':$parent.iframeScope.globalSettings.body_text['font-size-unit']=='px'}">
-										px
-								</div>
-								<div class="oxygen-measure-box-unit" 
-									ng-click="$parent.iframeScope.globalSettings.body_text['font-size-unit'] = '%'" 
-									ng-class="{'oxygen-measure-box-unit-active':$parent.iframeScope.globalSettings.body_text['font-size-unit']=='%'}">
-										%
-								</div>
-								<div class="oxygen-measure-box-unit" 
-									ng-click="$parent.iframeScope.globalSettings.body_text['font-size-unit'] = 'em'" 
-									ng-class="{'oxygen-measure-box-unit-active':$parent.iframeScope.globalSettings.body_text['font-size-unit']=='em'}">
-										em
-								</div>
-							</div>
-						</div>
+                        <?php self::global_measure_box_unit_selector("global", "body_text.font-size", "px,%,em") ?>
 					</div>
 				</div>
 			</div>
@@ -1395,26 +1388,7 @@ Class CT_Toolbar {
 							<input type="text" spellcheck="false" 
 								ng-model="$parent.iframeScope.globalSettings.links['<?php echo $link; ?>']['border-radius']" 
 								ng-model-options="{ debounce: 10 }">
-							<div class="oxygen-measure-box-unit-selector">
-								<div class="oxygen-measure-box-selected-unit">{{$parent.iframeScope.globalSettings.links['<?php echo $link; ?>']['border-radius-unit']}}</div>
-								<div class="oxygen-measure-box-units">
-									<div class="oxygen-measure-box-unit"
-										ng-click="$parent.iframeScope.globalSettings.links['<?php echo $link; ?>']['border-radius-unit']='px'"
-										ng-class="{'oxygen-measure-box-unit-active':$parent.iframeScope.globalSettings.links['<?php echo $link; ?>']['border-radius-unit']=='px'}">
-										px
-									</div>
-									<div class="oxygen-measure-box-unit"
-										ng-click="$parent.iframeScope.globalSettings.links['<?php echo $link; ?>']['border-radius-unit']='%'"
-										ng-class="{'oxygen-measure-box-unit-active':$parent.iframeScope.globalSettings.links['<?php echo $link; ?>']['border-radius-unit']=='%'}">
-										&#37;
-									</div>
-									<div class="oxygen-measure-box-unit"
-										ng-click="$parent.iframeScope.globalSettings.links['<?php echo $link; ?>']['border-radius-unit']='em'"
-										ng-class="{'oxygen-measure-box-unit-active':$parent.iframeScope.globalSettings.links['<?php echo $link; ?>']['border-radius-unit']=='em'}">
-										em
-									</div>
-								</div>
-							</div>
+                            <?php self::global_measure_box_unit_selector("global", "links.$link.border-radius", "px,%,em") ?>
 						</div>
 					</div>
 				</div>
@@ -1724,6 +1698,11 @@ Class CT_Toolbar {
 							if (!in_array($icon, array("components","designsets","dynamicdata","sidebars","widgets"))) {
 								$icon = "generic";
 							}
+							
+							if (!oxygen_vsb_current_user_can_full_access() && $subfolder["id"] && in_array($subfolder["id"],array("data","sidebars","widgets"))) {
+								continue;
+							}
+
 						?>
 			
 							<?php if ( isset($subfolder["component"]) && $subfolder["component"] ) : ?>
@@ -1810,57 +1789,133 @@ Class CT_Toolbar {
 	function components_list() { ?>
 
 		<!-- Basics -->
-		<div class='oxygen-add-section-accordion'
-			ng-click="switchTab('components', 'fundamentals');"
-			ng-hide="iframeScope.hasOpenFolders()">
-			<?php _e("Basics", "oxygen") ?>
-			<img src='<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/add-icons/dropdown-arrow.svg'/>
-		</div>
+		<?php ob_start() ; ?>
 		<div class='oxygen-add-section-accordion-contents'
 			ng-if="isShowTab('components','fundamentals')">
 
-			<h2><?php _e("Containers", "oxygen");?></h2>
-			<?php do_action("oxygen_basics_components_containers"); ?>
+			<?php 
+				ob_start();
+				do_action("oxygen_basics_components_containers"); 
+				$output = ob_get_clean();
+				if (strpos($output,"oxygen-add-section-element")!==false) { ?>
+					<h2><?php _e("Containers", "oxygen");?></h2>
+					<?php echo $output;
+				}
+			?>
 			
-			<h2><?php _e("Text", "oxygen");?></h2>
-			<?php do_action("oxygen_basics_components_text"); ?>
+			<?php 
+				ob_start();
+				do_action("oxygen_basics_components_text"); 
+				$output = ob_get_clean();
+				if (strpos($output,"oxygen-add-section-element")!==false) { ?>
+					<h2><?php _e("Text", "oxygen");?></h2>
+					<?php echo $output;
+				}
+			?>
 			
-			<h2><?php _e("Links", "oxygen");?></h2>
-			<?php do_action("oxygen_basics_components_links"); ?>
+			<?php 
+				ob_start();
+				do_action("oxygen_basics_components_links"); 
+				$output = ob_get_clean();
+				if (strpos($output,"oxygen-add-section-element")!==false) { ?>
+					<h2><?php _e("Links", "oxygen");?></h2>
+					<?php echo $output;
+				}
+			?>
 			
-			<h2><?php _e("Visual", "oxygen");?></h2>
-			<?php do_action("oxygen_basics_components_visual"); ?>
+			<?php 
+				ob_start();
+				do_action("oxygen_basics_components_visual"); 
+				$output = ob_get_clean();
+				if (strpos($output,"oxygen-add-section-element")!==false) { ?>
+					<h2><?php _e("Visual", "oxygen");?></h2>
+					<?php echo $output;
+				}
+			?>
 			
-			<h2><?php _e("Other", "oxygen");?></h2>
-			<?php do_action("ct_toolbar_fundamentals_list"); ?>
+			<?php 
+				ob_start();
+				do_action("ct_toolbar_fundamentals_list"); 
+				$output = ob_get_clean();
+				if (strpos($output,"oxygen-add-section-element")!==false) { ?>
+					<h2><?php _e("Other", "oxygen");?></h2>
+					<?php echo $output;
+				}
+			?>
 		</div>
+		<?php $output = ob_get_clean(); 
+		if (strpos($output,"oxygen-add-section-element")!==false) { ?>
+			<div class='oxygen-add-section-accordion'
+				ng-click="switchTab('components', 'fundamentals');"
+				ng-hide="iframeScope.hasOpenFolders()">
+				<?php _e("Basics", "oxygen") ?>
+				<img src='<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/add-icons/dropdown-arrow.svg'/>
+			</div>
+			<?php echo $output;
+		}
+		?>
 		<!-- /Basics -->
 
 		<!-- Helpers -->
-		<div class='oxygen-add-section-accordion'
-			ng-click="switchTab('components', 'smart');"
-			ng-hide="iframeScope.hasOpenFolders()">
-			<?php _e("Helpers", "oxygen") ?>
-			<img src='<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/add-icons/dropdown-arrow.svg'/>
-		</div>
+		<?php ob_start() ; ?>
 		<div class='oxygen-add-section-accordion-contents oxygen-add-section-accordion-contents-toppad'
 			ng-if="isShowTab('components','smart')">
-			<h2><?php _e("Composite", "oxygen");?></h2>
-			<?php do_action("oxygen_helpers_components_composite"); ?>
 			
-			<h2><?php _e("Dynamic", "oxygen");?></h2>
-			<?php do_action("oxygen_helpers_components_dynamic"); ?>
+			<?php 
+				ob_start();
+				do_action("oxygen_helpers_components_composite"); 
+				$output = ob_get_clean();
+				if (strpos($output,"oxygen-add-section-element")!==false) { ?>
+					<h2><?php _e("Composite", "oxygen");?></h2>					
+					<?php echo $output;
+				}
+			?>
 			
-			<h2><?php _e("Interactive", "oxygen");?></h2>
-			<?php do_action("oxygen_helpers_components_interactive"); ?>
+			<?php 
+				ob_start();
+				do_action("oxygen_helpers_components_dynamic"); 
+				$output = ob_get_clean();
+				if (strpos($output,"oxygen-add-section-element")!==false) { ?>
+					<h2><?php _e("Dynamic", "oxygen");?></h2>					
+					<?php echo $output;
+				}
+			?>
 			
-			<h2><?php _e("External", "oxygen");?></h2>
-			<?php do_action("oxygen_helpers_components_external"); ?>
-
+			<?php 
+				ob_start();
+				do_action("oxygen_helpers_components_interactive"); 
+				$output = ob_get_clean();
+				if (strpos($output,"oxygen-add-section-element")!==false) { ?>
+					<h2><?php _e("Interactive", "oxygen");?></h2>					
+					<?php echo $output;
+				}
+			?>
+			
+			<?php 
+				ob_start();
+				do_action("oxygen_helpers_components_external"); 
+				$output = ob_get_clean();
+				if (strpos($output,"oxygen-add-section-element")!==false) { ?>
+					<h2><?php _e("External", "oxygen");?></h2>					
+					<?php echo $output;
+				}
+			?>
 		</div>
+		<?php $output = ob_get_clean(); 
+		if (strpos($output,"oxygen-add-section-element")!==false) { ?>
+			<div class='oxygen-add-section-accordion'
+				ng-click="switchTab('components', 'smart');"
+				ng-hide="iframeScope.hasOpenFolders()">
+				<?php _e("Helpers", "oxygen") ?>
+				<img src='<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/add-icons/dropdown-arrow.svg'/>
+			</div>
+			<?php echo $output;
+		}
+		?>
 		<!-- /Helpers -->
 
 		<!-- WordPress -->
+		<?php ob_start() ; ?>
 		<?php $this->output_folders_content( array(
 												"wordpress" => array(
 													"name" 	=> "WordPress",
@@ -1877,19 +1932,24 @@ Class CT_Toolbar {
 													)
 												)
 											) , "", "" ); ?>
+		<?php $output = ob_get_clean(); 
+		if (strpos($output,"oxygen-add-section-element")!==false) { 
+			echo $output; 
+		} ?>
 		<!-- /WordPress -->
 
 		<?php do_action("oxygen_add_plus_sections"); ?>
 
 		<!-- Library -->
 		<?php 
-		//if ( $this->folders["status"] == "ok" ) {
+		if (oxygen_vsb_user_can_use_design_library()) {
 			$this->output_folders_content( $this->folders, "", "");
-//		} 
+		}
 		?>
 		<!-- /Library -->
 
 		<!-- Reusable -->
+		<?php if (oxygen_vsb_user_can_use_reusable_parts()) :?>
 		<div class='oxygen-add-section-accordion'
 			ng-click="switchTab('components', 'reusable_parts');"
 			ng-hide="iframeScope.hasOpenFolders()">
@@ -1900,6 +1960,7 @@ Class CT_Toolbar {
 			ng-if="isShowTab('components','reusable_parts')">
 			<?php do_action("ct_toolbar_reusable_parts"); ?>
 		</div>
+		<?php endif; ?>
 		<!-- /Reusable -->
 
 	<?php }
@@ -1937,6 +1998,10 @@ Class CT_Toolbar {
 	 */
 
 	function ct_reusable_parts() {
+
+		if (!oxygen_vsb_current_user_can_full_access()&&!oxygen_vsb_user_can_use_reusable_parts()) {
+			return;
+		}
 
 		// Get all archive templates
 		$args = array(
@@ -2060,6 +2125,11 @@ Class CT_Toolbar {
 				ng-class="{'oxygen-measure-box-unit-active':iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')=='em'}">
 				em
 			</div>
+			<div class="oxygen-measure-box-unit"
+				ng-click="iframeScope.setOptionUnit('<?php echo esc_attr( $option ); ?>', 'rem')"
+				ng-class="{'oxygen-measure-box-unit-active':iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')=='rem'}">
+				rem
+			</div>
 			<?php endif; ?>
 			<?php if (in_array("auto", $types)) : ?>
 			<div class="oxygen-measure-box-unit"
@@ -2117,6 +2187,11 @@ Class CT_Toolbar {
 				days
 			</div>
 			<?php endif; ?>
+			<div class="oxygen-measure-box-unit"
+				ng-click="iframeScope.setOptionUnit('<?php echo esc_attr( $option ); ?>', ' ')"
+				ng-class="{'oxygen-measure-box-unit-active':iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')==' '}">
+				none
+			</div>
 		</div>
 
 	<?php }
@@ -2160,6 +2235,11 @@ Class CT_Toolbar {
 				ng-class="{'oxygen-measure-box-unit-active':iframeScope.getGlobalOptionUnit('<?php echo $context; ?>','<?php echo esc_attr( $option ); ?>')=='em'}">
 				em
 			</div>
+			<div class="oxygen-measure-box-unit"
+				ng-click="iframeScope.setGlobalOptionUnit('<?php echo $context; ?>','<?php echo esc_attr( $option ); ?>', 'rem')"
+				ng-class="{'oxygen-measure-box-unit-active':iframeScope.getGlobalOptionUnit('<?php echo $context; ?>','<?php echo esc_attr( $option ); ?>')=='rem'}">
+				rem
+			</div>
 			<?php endif; ?>
 			<?php if (in_array("auto", $types)) : ?>
 			<div class="oxygen-measure-box-unit"
@@ -2182,10 +2262,56 @@ Class CT_Toolbar {
 				vh
 			</div>
 			<?php endif; ?>
+			<div class="oxygen-measure-box-unit"
+				ng-click="iframeScope.setGlobalOptionUnit('<?php echo $context; ?>','<?php echo esc_attr( $option ); ?>', ' ')"
+				ng-class="{'oxygen-measure-box-unit-active':iframeScope.getGlobalOptionUnit('<?php echo $context; ?>','<?php echo esc_attr( $option ); ?>')==' '}">
+				<?= __("none", "oxygen") ?>
+			</div>
 		</div>
 
 	<?php }
 
+    static public function global_measure_box_unit_selector($context, $option, $units = "", $custom = true) {
+        if ($units === null) return;
+        
+        if ($units === "") {
+            $units = 'px,%,em,auto,vw,vh';
+        }
+
+        // Auto add rem unit with em units is present
+        if (strpos($units, 'em') !== false) {
+            $units = str_replace('em', 'em,rem', $units);
+        }
+
+        if (strpos($units, ",")) {
+            $units = explode(',', $units);
+        }
+        ?>
+        <div class="oxygen-measure-box-unit-selector" ng-class="{'oxygen-measure-box-unit-none':iframeScope.getGlobalOptionUnit('<?= $context ?>', '<?= $option ?>')==' '}">
+            <?php if (is_array($units)): ?>
+            <div class="oxygen-measure-box-selected-unit">{{iframeScope.getGlobalOptionUnitLabel('global', '<?= $option ?>')}}</div>
+            <div class="oxygen-measure-box-units">
+                <?php foreach ($units as $unit): ?>
+                <div class="oxygen-measure-box-unit" 
+                    ng-click="iframeScope.setGlobalOptionUnit('<?= $context ?>', '<?= $option ?>', '<?= $unit ?>')"
+                    ng-class="{'oxygen-measure-box-unit-active':iframeScope.getGlobalOptionUnit('<?= $context ?>', '<?= $option ?>')=='<?= $unit ?>'}">
+                    <?= $unit ?>
+                </div>
+                <?php endforeach ?>
+                <?php if ($custom): ?>
+                <div class="oxygen-measure-box-unit" 
+                    ng-click="iframeScope.setGlobalOptionUnit('<?= $context ?>', '<?= $option ?>', ' ')"
+                    ng-class="{'oxygen-measure-box-unit-active':iframeScope.getGlobalOptionUnit('<?= $context ?>', '<?= $option ?>')==' '}">
+                    <?= __("none", "oxygen") ?>
+                </div>
+                <?php endif ?>
+            </div>
+            <?php else: ?>
+            <div class="oxygen-measure-box-selected-unit"><?= $units ?></div>
+            <?php endif ?>
+        </div>
+        <?php
+    }
 
 	/**
 	 * Output .oxygen-measure-box-options element
@@ -2208,8 +2334,8 @@ Class CT_Toolbar {
 				ng-class="{'oxygen-measure-box-unit-auto':iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')=='auto'}">
 				<input type='text' type="text" spellcheck="false"
 					<?php $this->ng_attributes($option); ?>/>
-				<div class='oxygen-measure-box-unit-selector'>
-					<div class='oxygen-measure-box-selected-unit'>{{iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')}}</div>
+				<div class='oxygen-measure-box-unit-selector' ng-class="{'oxygen-measure-box-unit-none':iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')==' '}">
+					<div class='oxygen-measure-box-selected-unit'>{{iframeScope.getOptionUnitLabel('<?php echo esc_attr( $option ); ?>')}}</div>
 					<?php $this->measure_type_select($option, $units); ?>
 				</div>
 			</div>
@@ -2337,16 +2463,16 @@ Class CT_Toolbar {
 
 		?>
 
-		<div class='oxygen-measure-box'
+		<div class='oxygen-measure-box oxygen-measure-box-option-<?php echo esc_attr( $option ); ?>'
 			ng-class="{'oxygen-measure-box-unit-auto':iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')=='auto'<?php echo $default_class; ?>}">
 			<input type="text" spellcheck="false"
 				data-option="<?php echo esc_attr( $option ); ?>"
 				<?php if ($attributes) $this->ng_attributes($option,$attributes); else $this->ng_attributes($option);?>/>
-			<div class='oxygen-measure-box-unit-selector'>
+			<div class='oxygen-measure-box-unit-selector' ng-class="{'oxygen-measure-box-unit-none':iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')==' '}">
 				<?php if (strpos($units, ",")===false&&strlen($units)>0) : ?>
 					<div class='oxygen-measure-box-selected-unit'><?php echo esc_html($units); ?></div>
 				<?php else: ?>
-					<div class='oxygen-measure-box-selected-unit'>{{iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')}}</div>
+					<div class='oxygen-measure-box-selected-unit'>{{iframeScope.getOptionUnitLabel('<?php echo esc_attr( $option ); ?>')}}</div>
 					<?php self::measure_type_select($option,$units); ?>
 				<?php endif; ?>
 			</div>
@@ -2412,14 +2538,14 @@ Class CT_Toolbar {
 		?>
 
 		<div class="oxygen-slider-measure-box"
-			ng-class="{'oxygen-measure-box-unit-auto':iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')=='auto'<?php echo esc_attr($default_class); ?>}">
+			ng-class="{'oxygen-measure-box-unit-auto':iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')=='auto','oxygen-measure-box-unit-none':iframeScope.getOptionUnit('<?php echo esc_attr( $option ); ?>')==' '<?php echo esc_attr($default_class); ?>}">
 			<?php self::measure_box($option, $units, false, $default); ?>
 			<div class="oxygen-measure-box-slider">
 				<input type="range" 
 					min="<?php echo ($min!==null&&$min!=='') ? esc_attr($min) : 0; ?>" 
 					max="<?php echo ($max!==null&&$max!=='') ? esc_attr($max) : 100; ?>" 
 					<?php echo ($step!==null&&$step!=='') ?  "step=\"".esc_attr($step)."\"": ""; ?>
-					<?php $this->ng_attributes($option); ?>>
+					<?php $this->ng_attributes($option); ?> ng-disabled="iframeScope.getOptionUnit('<?= esc_attr( $option ) ?>')==' '">
 			</div>
 		</div>
 
@@ -3077,7 +3203,13 @@ Class CT_Toolbar {
 	 * @author Ilya K.
 	 */
 
-	function data_folder() { ?>
+	function data_folder() { 
+		
+		if (!oxygen_vsb_current_user_can_full_access()){
+			return;
+		}
+		
+		?>
 
 		<div class="oxygen-add-section-element"
 			data-searchid="dynamic_data_title"

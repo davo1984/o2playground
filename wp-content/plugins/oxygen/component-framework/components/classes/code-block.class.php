@@ -185,7 +185,13 @@ Class CT_Code_Block extends CT_Component {
 	 * @author Ilya K. 
 	 */
 
-	function code_block_settings() { ?>
+	function code_block_settings() { 
+		
+		if (!oxygen_vsb_current_user_can_full_access()) {
+			return;
+		}
+		
+		?>
 
 		<div class="oxygen-sidebar-flex-panel"
 			ng-show="isActiveName('ct_code_block')">

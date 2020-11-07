@@ -155,6 +155,11 @@ CTFrontendBuilder.controller("ControllerNavigation", function($scope, $parentSco
                         activate = "";
                     }
 
+                    if (CtBuilderAjax.userEditOnly=="true" && !$scope.isElementEnabledForUser(item.name) && item.name === "ct_code_block"){
+                        activate = "";
+                        classes += " ct-dom-tree-node-disabled";
+                    }
+
                     if ( !item.children ) {
                         classes += " ct-dom-tree-no-children";
                     }
@@ -333,6 +338,10 @@ CTFrontendBuilder.controller("ControllerNavigation", function($scope, $parentSco
                         }
                         else {
                             var removeIcon = '';
+                        }
+
+                        if (CtBuilderAjax.userEditOnly=="true" && !$scope.isElementEnabledForUser(item.name)) {
+                            removeIcon = '';
                         }
 
                         var categoriesList = false;

@@ -2073,7 +2073,6 @@ CTFrontendBuilder.controller("ControllerAJAX", function($scope, $parentScope, $h
         })
         .success(function(data, status, headers, config) {
             if (data){
-                console.log(data);
                 $scope.elementPresets = data;
             }
             else {

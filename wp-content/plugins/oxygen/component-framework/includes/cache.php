@@ -186,7 +186,7 @@ function oxygen_vsb_save_css_file($content, $post_id) {
 	$files_meta = get_option("oxygen_vsb_css_files_state", array());
 		
 	// delete file if exist
-	if ( $files_meta[$post_id]['path'] ) {
+	if ( isset($files_meta[$post_id]['path']) && $files_meta[$post_id]['path'] ) {
 		unlink($files_meta[$post_id]['path']);
 	}
 
@@ -593,6 +593,10 @@ function global_colors_cache_notice() {
 		return;
 	}
 
+	if (!oxygen_vsb_current_user_can_full_access()) {
+		return;
+	}
+
 	// don't show if cache tab is open
 	$tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : false;
 	$page = isset($_GET['page']) ? sanitize_text_field($_GET['page']) : false;
@@ -624,6 +628,10 @@ add_action( 'admin_notices', 'global_colors_cache_notice' );
 function oxygen_breakpoints_cache_notice() { 
 
 	if (!get_option("oxygen_breakpoints_cache_update_required",false)) {
+		return;
+	}
+
+	if (!oxygen_vsb_current_user_can_full_access()) {
 		return;
 	}
 
@@ -662,6 +670,10 @@ function oxygen_vsb_update_2_2_notice() {
 	}
 
 	if (get_option("oxygen_vsb_css_cache_generated_2_2")=="true") {
+		return;
+	}
+
+	if (!oxygen_vsb_current_user_can_full_access()) {
 		return;
 	}
 

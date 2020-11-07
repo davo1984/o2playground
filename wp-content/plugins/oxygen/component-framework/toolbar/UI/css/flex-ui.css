@@ -815,11 +815,17 @@ ul.oxygen-control-label li a {
 	position: relative;
 	cursor: pointer;
 }
+.oxygen-measure-box.oxygen-measure-box-option-opacity .oxygen-measure-box-unit-selector {
+    display: none;
+}
 
 .oxygen-measure-box .oxygen-measure-box-selected-unit {
 	position: relative;
 	top: -2px;
 	opacity: 0.5;
+}
+.oxygen-measure-box .oxygen-measure-box-unit-none .oxygen-measure-box-selected-unit {
+    opacity: 1;
 }
 
 .oxygen-measure-box .oxygen-measure-box-units {
@@ -907,6 +913,14 @@ ul.oxygen-control-label li a {
 	top: -4px;
 	margin-left: 10px;
 	flex-basis: 200px;
+}
+
+.oxygen-slider-measure-box.oxygen-measure-box-unit-none .oxygen-measure-box {
+    flex-basis: unset;
+    width: 100%;
+}
+.oxygen-slider-measure-box.oxygen-measure-box-unit-none .oxygen-measure-box-slider {
+    display: none;
 }
 
 /*.oxygen-measure-box-slider:before {
@@ -4495,4 +4509,83 @@ i.ct-icon-if-conditions {
     background-color: #7bacd0;
     color: #000000;
     cursor: default;
+}
+
+/* Edit Mode CSS */
+
+.oxygen-edit-only-mode:not(.oxygen-has-enabled-elements):not(.oxygen-can-use-reusable-parts):not(.oxygen-can-use-design-library) .oxygen-hide-sidebar-button, 
+.oxygen-edit-only-mode:not(.oxygen-has-enabled-elements):not(.oxygen-can-use-reusable-parts):not(.oxygen-can-use-design-library) .oxygen-show-sidebar-button {
+	height: 100%
+}
+.oxygen-edit-only-mode:not(.oxygen-has-enabled-elements):not(.oxygen-can-use-reusable-parts):not(.oxygen-can-use-design-library) .oxygen-left-button-wrap {
+	width: 113px
+}
+.oxygen-edit-only-mode .oxygen-toolbar-button-dropdown {
+	top: 57px;
+}
+
+.oxygen-edit-only-mode:not(.oxygen-has-enabled-elements):not(.oxygen-can-use-reusable-parts):not(.oxygen-can-use-design-library) .oxygen-add-panels {
+    display: none;
+}
+.oxygen-edit-only-mode:not(.oxygen-has-enabled-elements):not(.oxygen-can-use-reusable-parts):not(.oxygen-can-use-design-library) .oxygen-add-searchbar-wrapper {
+    display: none;
+}
+
+/* Hide 'Insert Data' Button in Top Bar */
+.oxygen-edit-only-mode .oxygen-formatting-toolbar .oxygen-insert-data {
+    opacity: 0;
+    pointer-events: none;
+    height: 0px;
+}
+
+.oxygen-edit-only-mode .oxygen-link-button {
+	display: none;
+}
+.oxygen-edit-only-mode .oxygen-dynamic-data-browse {
+	display: none;
+}
+.oxygen-edit-only-mode .oxygen-classes-dropdown li:first-child {
+	display: none;
+}
+
+/* Hide PHP, JavaScript, & CSS tabs in Properties Pane */
+.oxygen-edit-only-mode .oxygen-sidebar-advanced-subtab[ng-click*='code'] {
+    display: none;
+}
+
+/* Disabled Structure nodes */
+.ct-dom-tree-node-disabled .ct-dom-tree-node-anchor {
+    opacity: 0.5;
+    filter: grayscale(100%);
+    pointer-events: none;
+}
+
+/* Hide dom tree delete & more options buttons */
+.oxygen-edit-only-mode .ct-node-options .ct-more-options-icon {
+    display: none !important;
+}
+
+.oxygen-edit-only-mode .oxygen-classes-dropdown li > img {
+	display: none;
+}
+
+/* Hide flexbox layout controls */
+.oxygen-edit-only-mode .oxygen-ct_div_block-flex-direction,
+.oxygen-edit-only-mode .oxygen-control-rows-multiple-inset[ng-show*='flex-direction'],
+.oxygen-edit-only-mode .oxygen-ct_section-flex-direction,
+.oxygen-edit-only-mode .oxygen-ct_div_block-width,
+.oxygen-edit-only-mode .oxygen-ct_image-width,
+.oxygen-edit-only-mode .oxygen-ct_image-height,
+.oxygen-edit-only-mode .oxygen-ct_link-width,
+.oxygen-edit-only-mode .oxygen-ct_link-flex-direction {
+    opacity: 0;
+    pointer-events: none;
+    height: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+
+/* Remove bottom margin, fixing unsightly gap after hiding controls in Properties Pane */
+.oxygen-edit-only-mode .oxygen-sidebar-control-panel-basic-styles .oxygen-control-row {
+	margin-bottom: 0px;
 }

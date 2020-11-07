@@ -168,6 +168,10 @@ Class OxygenElementHelper {
 
 	public function button() { 
 
+		if (oxygen_hide_element_button($this->params['tag'])) {
+			return;
+		}
+
 		$options = "{";
 		if ( isset($this->params['other_options']) && 
 			 isset($this->params['other_options']['rebuild_parent_on_add']) && 

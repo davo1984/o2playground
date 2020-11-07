@@ -77,7 +77,13 @@ Class CT_Data_Comment_Form extends CT_Component {
 	 * @since 1.5
 	 */
 
-	function component_button() { ?>
+	function component_button() { 
+		
+		if (oxygen_hide_element_button($this->options['tag'])) {
+			return;
+		}
+		
+		?>
 
 		<div class="oxygen-add-section-element"
  			data-searchid="<?php echo strtolower( preg_replace('/\s+/', '_', sanitize_text_field( $this->options['name'] ) ) ) ?>"

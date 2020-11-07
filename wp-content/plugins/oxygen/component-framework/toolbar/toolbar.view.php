@@ -17,6 +17,8 @@
 	<div id="oxygen-topbar" class="oxygen-toolbar">
 
         <div class="oxygen-left-button-wrap">
+			<?php if (oxygen_vsb_current_user_can_full_access()||oxygen_vsb_user_has_enabled_elements()||
+					  oxygen_vsb_user_can_use_design_library()||oxygen_vsb_user_can_use_reusable_parts()) : ?>
             <div class="oxygen-add-button oxygen-toolbar-button"
                 ng-click="switchActionTab('componentBrowser')"
                 ng-dblclick="switchTab('components', 'fundamentals')">
@@ -24,7 +26,7 @@
                 <img src="<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/toolbar-icons/add--hover.svg">
                 <span><?php _e("Add", "oxygen"); ?></span>
             </div>
-            
+            <?php endif; ?>
             <div class="oxygen-hide-sidebar-button" ng-class="{active: showLeftSidebar}" ng-click="doHideLeftSidebar(true)">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" width="12" height="12">
                     <path fill="currentColor" d="M34.52 239.03L228.87 44.69c9.37-9.37 24.57-9.37 33.94 0l22.67 22.67c9.36 9.36 9.37 24.52.04 33.9L131.49 256l154.02 154.75c9.34 9.38 9.32 24.54-.04 33.9l-22.67 22.67c-9.37 9.37-24.57 9.37-33.94 0L34.52 272.97c-9.37-9.37-9.37-24.57 0-33.94z"></path>
@@ -95,7 +97,7 @@
 
 		
 		<div class="oxygen-toolbar-menus">
-
+			<?php if (oxygen_vsb_current_user_can_full_access()) : ?>
 			<div class="oxygen-manage-menu oxygen-toolbar-button oxygen-select">
 				<div class="oxygen-toolbar-button-dropdown">
 					<div class="oxygen-toolbar-button-dropdown-option"
@@ -113,6 +115,7 @@
 				<span><?php _e("Manage", "oxygen"); ?></span>
 				<img src="<?php echo CT_FW_URI; ?>/toolbar/UI/oxygen-icons/dropdown-arrow.svg">
 			</div>
+			<?php endif; ?>
 
 			<?php
 			/* Load the admin bar class code ready for instantiation */
@@ -522,6 +525,7 @@
 				$tabs .= ",'$tab'"; 
 			} 
 			?>
+			<?php if (oxygen_vsb_user_can_use_advanced_tab()) : ?>
 			<div class='oxygen-sidebar-tabs'>
 				<div class='oxygen-sidebar-tabs-tab'
 					ng-click="styleTabAdvance=false;closeTabs(['oxy_posts_grid', 'dynamicList', 'slider','navMenu','effects','gallery'<?php echo $tabs; ?>]);toggleSidebar(true)" 
@@ -533,6 +537,7 @@
 				</div>
 			</div>
 			<!-- .oxygen-sidebar-tabs -->
+			<?php endif; ?>
 			
 		</div>
 
@@ -812,7 +817,7 @@
 					<?php $this->settings_child_tab(__("Body Text", "oxygen"), "default-styles", "body-text", "panelsection-icons/bodytext.svg"); ?>
 					<?php $this->settings_tab(__("Links", "oxygen"), "links", "panelsection-icons/links.svg"); ?>
 					<?php $this->settings_child_tab(__("Width & Breakpoints", "oxygen"), "default-styles", "page-width", "panelsection-icons/general-config.svg"); ?>
-					<?php $this->settings_child_tab(__("Sections", "oxygen"), "default-styles", "sections", "panelsection-icons/general-config.svg"); ?>
+					<?php $this->settings_child_tab(__("Sections & Columns", "oxygen"), "default-styles", "sections", "panelsection-icons/general-config.svg"); ?>
 
 					<?php
 

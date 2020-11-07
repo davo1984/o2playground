@@ -43,7 +43,7 @@ Class CT_Inner_Content extends CT_Component {
 		if(isset($_REQUEST['oxy_preview_revision']) && is_numeric($_REQUEST['oxy_preview_revision'])) {
 			$shortcodes = Oxygen_Revisions::get_post_meta_db( $post_id, null, true, null, OBJECT, $_REQUEST['oxy_preview_revision'] )->meta_value;
 		}
-		else if (isset($_REQUEST['xlink']) && $_REQUEST['xlink'] == "css" && $_REQUEST['nouniversal'] == "true") {
+		else if (isset($_REQUEST['xlink']) && $_REQUEST['xlink'] == "css" && isset($_REQUEST['nouniversal']) && $_REQUEST['nouniversal'] == "true") {
 			// set random text so it does not look for template
 			$shortcodes = "no shortcodes";
 		} 
@@ -135,6 +135,10 @@ Class CT_Inner_Content extends CT_Component {
 	 * @since 0.1
 	 */
 	function component_button() { 
+
+		if (oxygen_hide_element_button($this->options['tag'])) {
+			return;
+		}
 
 		$post_type = get_post_type();
 		

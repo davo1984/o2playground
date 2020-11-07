@@ -216,6 +216,7 @@ class Oxygen_VSB_Progress_Bar extends CT_Component{
         
         ob_start(); ?>
 
+        <?php if(isset($params['progress_bar_background_color'])) : ?>
         <?php $css = $this->get_single_css_property("background-color", oxygen_vsb_get_global_color_value($params['progress_bar_background_color'])); ?>
         <?php if ($css != "" || isset($stripecss) || isset($animation_css['stripes'])) : ?>
         <?php echo $params["selector"]; ?> .oxy-progress-bar-background {
@@ -224,6 +225,7 @@ class Oxygen_VSB_Progress_Bar extends CT_Component{
             <?php if(isset($animation_css['stripes'])) $this->output_single_css_property("animation", $animation_css['stripes']); ?>
         }
         <?php endif; ?>
+        <?php endif; ?>
 
         <?php if(isset($params['progress_bar_progress'])) : ?>
         <?php echo $params["selector"]; ?> .oxy-progress-bar-progress-wrap {
@@ -231,6 +233,7 @@ class Oxygen_VSB_Progress_Bar extends CT_Component{
         }
         <?php endif; ?>
 
+        <?php if(isset($params['progress_bar_bar_color'])) : ?>
         <?php $css = ""; ?>
         <?php $css .= $this->get_single_css_property("background-color", oxygen_vsb_get_global_color_value($params['progress_bar_bar_color'])); ?>
         <?php if(isset($params['progress_bar_bar_padding'])) 
@@ -241,6 +244,7 @@ class Oxygen_VSB_Progress_Bar extends CT_Component{
             <?php echo $css; ?>
             <?php if(isset($stripecss)) echo $stripecss; ?>        
         }
+        <?php endif; ?>
         <?php endif; ?>
 
         <?php $css = $this->typography_to_css($params, 'progress_bar_left_text_typography', $defaults); ?>

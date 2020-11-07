@@ -16,7 +16,7 @@
 					<div class="oxygen-measure-box-selected-unit">{{color['position-unit']}}</div>
 					<div class="oxygen-measure-box-units">
 						<div class="oxygen-measure-box-unit"
-							ng-repeat="unit in ['px', '%', 'em']"
+							ng-repeat="unit in ['px', '%', 'em', 'rem']"
 							ng-class="{'oxygen-measure-box-unit-active':color['position-unit'] == unit}"
 							ng-click="color['position-unit'] = unit; setGradientForBG()" >
 							{{unit}}

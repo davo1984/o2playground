@@ -61,10 +61,12 @@ class oxygen_toolset {
                 $group_id = get_posts($args)[0]->ID;
                 $types_group_post_types = explode( ',' , get_post_meta(  $group_id, '_wp_types_group_post_types', true ) );
                 $found = false;
-                foreach ($oxygen_template_post_types as $oxygen_template_post_type) {
-                    if( in_array( $oxygen_template_post_type, $types_group_post_types ) ) {
-                        $found = true;
-                        break;
+                if (is_array($oxygen_template_post_types)) {
+                    foreach ($oxygen_template_post_types as $oxygen_template_post_type) {
+                        if( in_array( $oxygen_template_post_type, $types_group_post_types ) ) {
+                            $found = true;
+                            break;
+                        }
                     }
                 }
                 // avoid adding the field group if not found

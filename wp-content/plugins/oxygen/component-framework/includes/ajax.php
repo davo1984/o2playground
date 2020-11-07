@@ -281,6 +281,7 @@ function ct_save_components_tree_as_post() {
 	oxygen_vsb_cache_page_css($post_id, $shortcodes);
 
 	// save Google Fonts cache
+    $google_fonts_cache = false;
 	if (isset($params['google_fonts_cache'])) {
 		$google_fonts_cache = update_option("oxygen_vsb_google_fonts_cache", $params['google_fonts_cache'] );
 	}
@@ -582,14 +583,16 @@ function ct_save_component_as_view() {
 add_action('wp_ajax_ct_save_component_as_view', 'ct_save_component_as_view');
 
 function ct_embed_inner_content($children, $inner_content) {
-	foreach($children as $key => $val) {
-		$name = $children[$key]['name'];
-		if($name == 'ct_inner_content') {
-			$children[$key]['children'] = $inner_content;
-		}
-		elseif(isset($children[$key]['children'])) { // go recursive
-			$children[$key]['children'] = ct_embed_inner_content($children[$key]['children'], $inner_content);
-		}
+    if (is_array($children)) {
+        foreach($children as $key => $val) {
+            $name = $children[$key]['name'];
+            if($name == 'ct_inner_content') {
+                $children[$key]['children'] = $inner_content;
+            }
+            elseif(isset($children[$key]['children'])) { // go recursive
+                $children[$key]['children'] = ct_embed_inner_content($children[$key]['children'], $inner_content);
+            }
+        }
 	}
 	return $children;
 }
@@ -597,20 +600,22 @@ function ct_embed_inner_content($children, $inner_content) {
 function ct_replace_inner_content($children, $inner_content) {
 	$offset = 0;
 	$found = false;
-	foreach($children as $key => $val) {
-		if($val['name'] == 'ct_inner_content') {
-			$found = true;
-			foreach($inner_content as $inKey=>$inVal) {
-				
-				$inner_content[$inKey]['options']['ct_parent'] = $children[$key]['options']['ct_parent'];
-			}
-			array_splice($children, $offset, 1, $inner_content);
-		}
-		elseif(!$found && isset($children[$key]['children'])) { // go recursive
-			
-			$children[$key]['children'] = ct_replace_inner_content($children[$key]['children'], $inner_content);
-		}
-		$offset++;
+    if (is_array($children)) {
+        foreach($children as $key => $val) {
+            if($val['name'] == 'ct_inner_content') {
+                $found = true;
+                foreach($inner_content as $inKey=>$inVal) {
+                    
+                    $inner_content[$inKey]['options']['ct_parent'] = $children[$key]['options']['ct_parent'];
+                }
+                array_splice($children, $offset, 1, $inner_content);
+            }
+            elseif(!$found && isset($children[$key]['children'])) { // go recursive
+                
+                $children[$key]['children'] = ct_replace_inner_content($children[$key]['children'], $inner_content);
+            }
+            $offset++;
+        }
 	}
 	return $children;
 }
@@ -622,60 +627,62 @@ function ct_prepare_outer_template($children, $ctDepthParser) {
 	$container_id = false;
 	$parent_id = false;
 
-	foreach($children as $key => $val) {
+    if (is_array($children)) {
+        foreach($children as $key => $val) {
 
-		$name = $children[$key]['name'];
+            $name = $children[$key]['name'];
 
-		if($children[$key]['options']['ct_id'] > 0) {
-			// obfuscate selector
-			$children[$key]['options']['selector'] = str_replace('_'.$children[$key]['id'].'_post_', '_'.($children[$key]['id']+100000).'_post_', $children[$key]['options']['selector']);
-			// obfuscate Ids 
-			$children[$key]['options']['ct_id'] += 100000; 
-		}
-		
-		if($children[$key]['options']['ct_parent'] > 0) { // obfuscate parent ids
-			$children[$key]['options']['ct_parent'] += 100000;
-		}
+            if($children[$key]['options']['ct_id'] > 0) {
+                // obfuscate selector
+                $children[$key]['options']['selector'] = str_replace('_'.$children[$key]['id'].'_post_', '_'.($children[$key]['id']+100000).'_post_', $children[$key]['options']['selector']);
+                // obfuscate Ids 
+                $children[$key]['options']['ct_id'] += 100000; 
+            }
+            
+            if($children[$key]['options']['ct_parent'] > 0) { // obfuscate parent ids
+                $children[$key]['options']['ct_parent'] += 100000;
+            }
 
-		$ctDepthParser->storeParentReference($children[$key]);
+            $ctDepthParser->storeParentReference($children[$key]);
 
-		if($name == 'ct_inner_content') {
-			$inner_content = $children[$key];
-			$container_id = $children[$key]['options']['ct_id'];;
-			$parent_id = $children[$key]['options']['ct_parent'];
+            if($name == 'ct_inner_content') {
+                $inner_content = $children[$key];
+                $container_id = $children[$key]['options']['ct_id'];;
+                $parent_id = $children[$key]['options']['ct_parent'];
 
-			$ctDepthParser->storeDepths($parent_id);
-		}
+                $ctDepthParser->storeDepths($parent_id);
+            }
 
-		
-		$depth = isset($children[$key]['depth']) ? $children[$key]['depth'] : 0;
+            
+            $depth = isset($children[$key]['depth']) ? $children[$key]['depth'] : 0;
 
-		if(isset($ct_offsetDepths_source[$name]) ) {
-			if($ct_offsetDepths_source[$name] > $depth) {
-				$ct_offsetDepths_source[$name] = $depth;
-			}
-		}
-		else
-			$ct_offsetDepths_source[$name] = $depth;
+            if(isset($ct_offsetDepths_source[$name]) ) {
+                if($ct_offsetDepths_source[$name] > $depth) {
+                    $ct_offsetDepths_source[$name] = $depth;
+                }
+            }
+            else
+                $ct_offsetDepths_source[$name] = $depth;
 
-		if(isset($children[$key]['children'])) { // go recursive
-			$prepared_outer_content = ct_prepare_outer_template($children[$key]['children'], $ctDepthParser);
-			$children[$key]['children'] = $prepared_outer_content['content'];
+            if(isset($children[$key]['children'])) { // go recursive
+                $prepared_outer_content = ct_prepare_outer_template($children[$key]['children'], $ctDepthParser);
+                $children[$key]['children'] = $prepared_outer_content['content'];
 
-			if($prepared_outer_content['inner_content']) {
-				$inner_content = $prepared_outer_content['inner_content'];
-			}
+                if($prepared_outer_content['inner_content']) {
+                    $inner_content = $prepared_outer_content['inner_content'];
+                }
 
-			if($prepared_outer_content['container_id']) {
-				$container_id = $prepared_outer_content['container_id'];
-			}
+                if($prepared_outer_content['container_id']) {
+                    $container_id = $prepared_outer_content['container_id'];
+                }
 
-			if($prepared_outer_content['parent_id']) {
-				$parent_id = $prepared_outer_content['parent_id'];
-			}
-		}
+                if($prepared_outer_content['parent_id']) {
+                    $parent_id = $prepared_outer_content['parent_id'];
+                }
+            }
 
-		$children[$key]['id'] = $children[$key]['options']['ct_id'];
+            $children[$key]['id'] = $children[$key]['options']['ct_id'];
+        }
 	}
 
 	return array('content' => $children, 'inner_content' => $inner_content, 'container_id' => $container_id, 'parent_id' => $parent_id);
@@ -685,20 +692,22 @@ function ct_prepare_inner_content($children, $container_id, $depth) {
 	
 	global $ct_offsetDepths_source;
 
-	foreach($children as $key => $val) {
+    if (is_array($children)) {
+        foreach($children as $key => $val) {
 
-		if(intval($children[$key]['options']['ct_parent']) === 0) {
-			$children[$key]['options']['ct_parent'] = $container_id;
-		}
-		
-		
-		if(isset($children[$key]['depth'])) {
-			$children[$key]['depth'] += $depth;
-		}
+            if(intval($children[$key]['options']['ct_parent']) === 0) {
+                $children[$key]['options']['ct_parent'] = $container_id;
+            }
+            
+            
+            if(isset($children[$key]['depth'])) {
+                $children[$key]['depth'] += $depth;
+            }
 
-		if(isset($children[$key]['children'])) {
-			$children[$key]['children'] = ct_prepare_inner_content($children[$key]['children'], $container_id, $depth);
-		}
+            if(isset($children[$key]['children'])) {
+                $children[$key]['children'] = ct_prepare_inner_content($children[$key]['children'], $container_id, $depth);
+            }
+        }
 	}
 
 	return $children;
@@ -1274,14 +1283,14 @@ function ct_get_template_data() {
 		}
 	}
 
-	if (is_object($data['postData'])){
+	if (isset($data['postData']) && is_object($data['postData'])){
 		$data['postData']->frontendURL = $data['postData']->permalink;
 		if (force_ssl_admin()) {
 			$data['postData']->permalink = str_replace("http://", "https://", $data['postData']->permalink);
 		}
 	}
 	
-	if (is_array($data['postData'])){
+	if (isset($data['postData']) && is_array($data['postData'])){
 		$data['postData']['frontendURL'] = $data['postData']['permalink'];
 		if (force_ssl_admin()) {
 			$data['postData']['permalink'] = str_replace("http://", "https://", $data['postData']['permalink']);
@@ -1304,7 +1313,7 @@ function ct_get_template_data() {
 	
 	$homepage 	= get_option('page_on_front');
 
-	if(is_array($data['postsList'])) {
+	if(isset($data['postsList']) && is_array($data['postsList'])) {
 		foreach($data['postsList'] as $key => $item) {
 			// if the item has shortcodes
 			$shortcodes = get_post_meta($item['id'], 'ct_builder_shortcodes', true);
@@ -1627,12 +1636,7 @@ function ct_new_style_api_call_security_check($call_type) {
 	}
 
 
-	if (!is_user_logged_in() || !current_user_can( 'manage_options' )) {
-		$failure = true;
-	}
-
-	// check user role
-	if ( ! current_user_can( 'edit_posts' ) ) {
+	if (!oxygen_vsb_current_user_can_access()) {
 		$failure = true;
 	}
 
@@ -1830,7 +1834,7 @@ function ct_recursively_manage_reusables($children, $source_info, $source) {
 			unset($children[$key]);
 			// global $wpdb;
 			// // check if a ct_source_site meta exists with value equal to that of the view_id,
-			// $data = $wpdb->get_results("SELECT * FROM `".$wpdb->postmeta."` WHERE meta_key='ct_source_post' AND meta_value='".$wpdb->escape($item['options']['view_id'])."'");
+			// $data = $wpdb->get_results("SELECT * FROM `".$wpdb->postmeta."` WHERE meta_key='ct_source_post' AND meta_value='".$wpdb->prepare($item['options']['view_id'])."'");
 			// $post_info = array();
 
 			// if (is_array($data) && !empty($data)) {
@@ -1928,7 +1932,7 @@ function ct_get_page_from_source() {
 
 		if(isset($component['children'])) {
 			
-			$data = $wpdb->get_results("SELECT * FROM `".$wpdb->postmeta."` WHERE meta_key='ct_source_site' AND meta_value='".$wpdb->escape(base64_decode($source))."'");
+			$data = $wpdb->get_results("SELECT * FROM `".$wpdb->postmeta."` WHERE meta_key='ct_source_site' AND meta_value='".$wpdb->prepare(base64_decode($source))."'");
 			$source_info = array();
 
 			if (is_array($data) && !empty($data)) {
@@ -2018,7 +2022,7 @@ function ct_get_component_from_source() {
 	if(isset($component['children'])) {
 
 		global $wpdb;
-		$data = $wpdb->get_results("SELECT * FROM `".$wpdb->postmeta."` WHERE meta_key='ct_source_site' AND meta_value='".$wpdb->escape(base64_decode($source))."'");
+		$data = $wpdb->get_results("SELECT * FROM `".$wpdb->postmeta."` WHERE meta_key='ct_source_site' AND meta_value='".$wpdb->prepare(base64_decode($source))."'");
 		$source_info = array();
 
 		if (is_array($data) && !empty($data)) {
@@ -3670,3 +3674,9 @@ function is_oxygen_edit_post_locked($post_id=false) {
 	return ($transient) ? true : false;
 
 }
+
+function oxygen_render_innercontent() {
+	echo "0";
+	die();
+}
+add_action('wp_ajax_ct_render_innercontent', 'oxygen_render_innercontent');

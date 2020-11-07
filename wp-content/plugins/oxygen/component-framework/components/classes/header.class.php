@@ -38,7 +38,13 @@ Class Oxy_Header_Builder extends CT_Component {
 	 *
 	 * @since 2.0
 	 */
-	function component_button() { ?>
+	function component_button() { 
+		
+		if (oxygen_hide_element_button($this->options['tag'])) {
+			return;
+		}
+		
+		?>
 
 		<div class="oxygen-add-section-element"
 			data-searchid="<?php echo strtolower( preg_replace('/\s+/', '_', sanitize_text_field( $this->options['name'] ) ) ) ?>"
@@ -240,6 +246,7 @@ Class Oxy_Header_Builder extends CT_Component {
 
 		global $oxygen_toolbar; ?>
 
+		<?php if (!oxygen_hide_element_button('oxy_header')) : ?>
 		<div class="oxygen-control-row"
 			ng-show="isActiveName('oxy_header')&&!hasOpenTabs('oxy_header')">
 			<div class="oxygen-control-wrapper">
@@ -251,7 +258,8 @@ Class Oxy_Header_Builder extends CT_Component {
 				</div>
 			</div>
 		</div>
-
+		<?php endif; ?>
+		
 		<div ng-show="isActiveName('<?php echo $this->options['tag']; ?>')&&!hasOpenTabs('oxy_header')">
 			<?php $oxygen_toolbar->media_queries_list_with_wrapper("stack-header-vertically", __("Stack Vertically Below","oxygen"), true); ?>
 		</div>

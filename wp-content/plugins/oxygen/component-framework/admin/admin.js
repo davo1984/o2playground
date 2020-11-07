@@ -242,6 +242,8 @@ jQuery(document).ready(function($) {
 					jQuery('#ct-edit-template-builder').show();
 					jQuery('#oxygen-save-first-message').hide();
 
+					jQuery(".oxygen-edit-mode-button").insertBefore(".edit-post-header__toolbar").show()
+
 					// unbind click event as we don't need it anymore
 					jQuery('body').off('click', 'button, input[type=submit]', showEditWithOxygenButton);
 				}
@@ -308,5 +310,185 @@ jQuery(document).ready(function($) {
 	$("#oxygen-open-anyway-link").on("click", function(){
 		return confirm('Editing your site with Oxygen in multiple locations at once can result in data loss. Are you sure you want to proceed?');
 	});
+
+	// Client Control Panel > Users
+
+	// Add New User UI to set accees level
+	$("#oxygen_user_access_add_user").on("click", (e) => {
+		e.preventDefault();
+		let newUserSelect = $("#oxygen_user_access_placeholder").clone()
+		
+		newUserSelect.find("select").attr("name")
+		newUserSelect.removeAttr("id")
+		newUserSelect.addClass("oxygen-user-access-settings-row")
+		newUserSelect.appendTo( "#oxygen_user_access_table" )
+	})
+
+	// Update access level select to contain correct user ID when you choose the user
+	$("#oxygen_user_access_table").on("change", ".oxygen_user_access_user_select", (e) => {
+		let userID = e.target.value,
+			parentRow = $(e.target).closest(".oxygen-user-access-settings-row"),
+			accessLevelSelect 		= parentRow.find(".oxygen_user_access_level_select"),
+			enableElementsCheckbox 	= parentRow.find(".oxygen_vsb_options_users_access_enable_elements"),
+			enableElementsSelect 	= parentRow.find(".oxygen_user_access_enabled_elements"),
+			advancedTabCheckbox 	= parentRow.find(".oxygen_vsb_options_users_access_advanced_tab"),
+			dragNDropCheckbox 		= parentRow.find(".oxygen_vsb_options_users_access_drag_n_drop"),
+			reusablePartsCheckbox 	= parentRow.find(".oxygen_vsb_options_users_access_reusable_parts"),
+			designLibraryCheckbox 	= parentRow.find(".oxygen_vsb_options_users_access_design_library"),
+			disableClassesCheckbox 	= parentRow.find(".oxygen_vsb_options_users_access_disable_classes")
+
+		accessLevelSelect.attr("name",`oxygen_vsb_options_users_access_list[${userID}][]`)
+		enableElementsCheckbox.attr("name",`oxygen_vsb_options_users_access_enable_elements[${userID}][]`)
+		enableElementsSelect.attr("name",`oxygen_vsb_options_users_access_enabled_elements[${userID}][]`)
+		advancedTabCheckbox.attr("name",`oxygen_vsb_options_users_access_advanced_tab[${userID}][]`)
+		dragNDropCheckbox.attr("name",`oxygen_vsb_options_users_access_drag_n_drop[${userID}][]`)
+		reusablePartsCheckbox.attr("name",`oxygen_vsb_options_users_access_reusable_parts[${userID}][]`)
+		designLibraryCheckbox.attr("name",`oxygen_vsb_options_users_access_design_library[${userID}][]`)
+		disableClassesCheckbox.attr("name",`oxygen_vsb_options_users_access_disable_classes[${userID}][]`)
+	})
+
+	// "Edit Only" sub options select dropdown
+	$("#oxygen_user_access_table").on("change", ".oxygen_user_access_level_select", (e) => {
+		showHideEditOnlyOptions(e.target)
+		$(".oxygen_vsb_options_users_access_enable_elements").each((index, element) => {
+			showHideElementsSelect(element)
+		})
+	})
+
+	$(".oxygen_user_access_level_select").each((index, element) => {
+		showHideEditOnlyOptions(element)
+	})
+
+	function showHideEditOnlyOptions(element) {
+		let accessLevel = element.value,
+			subOptions = $(element).closest(".oxygen-user-access-settings-row").find(".oxygen_user_access_edit_only_sub_options")
+
+		if (accessLevel == "edit_only"){
+			subOptions.show()
+		}
+		else {
+			subOptions.hide()
+		}
+	}
+
+	// Elements select dropdown
+	if (typeof $(".oxygen_user_access_enabled_elements").select2 == "function") {
+		$(".oxygen-user-access-settings-row .oxygen_user_access_enabled_elements").select2({
+			placeholder: "Add Elements...",
+		});
+	}
+
+	$("#oxygen_user_access_table").on("change", ".oxygen_vsb_options_users_access_enable_elements", (e) => {
+		showHideElementsSelect(e.target)
+	})
+
+	$(".oxygen-user-access-settings-row .oxygen_vsb_options_users_access_enable_elements").each((index, element) => {
+		showHideElementsSelect(element)
+	})
+
+	function showHideElementsSelect(element) {
+		let isChecked = $(element).is(":checked"),
+			parentRow = $(element).closest(".oxygen-user-access-settings-row"),
+			elementsSelect = parentRow.find(".oxygen_user_access_enabled_elements"),
+			elementsSelect2 = parentRow.find(".select2"),
+			accessLevelSelect = parentRow.find(".oxygen_user_access_level_select"),
+			accessLevelOption = accessLevelSelect.find(":selected"),
+			accessLevel = accessLevelOption[0] ? accessLevelOption[0].value : false
+		
+		if (!elementsSelect2.length) {
+			parentRow.find(".oxygen_user_access_enabled_elements").select2({
+				placeholder: "Add Elementss...",
+			});
+			elementsSelect2 = parentRow.find(".select2");
+		}
+		
+		if (isChecked && accessLevel == "edit_only") {
+			elementsSelect.show()
+			elementsSelect2.show()
+		}
+		else {
+			elementsSelect.hide()
+			elementsSelect2.hide()
+		}
+	}
+
+	// Remove User
+	$("#oxygen_user_access_table").on("click", ".oxygen_user_access_remove_user", (e) => {
+		e.preventDefault();
+		let parentRow = $(e.target).closest(".oxygen-user-access-settings-row")
+		parentRow.remove()
+	})
+
+	// Edit with Oxygen alternative button for Edit Mode users
+	if ( document.location.href.indexOf(publishedPostURL) > 0 ) {
+		setTimeout(() => {
+			$(".oxygen-edit-mode-button").insertBefore(".edit-post-header__toolbar").show()
+		}, 1000);
+		$(".oxygen-edit-mode-button-non-gutenberg").insertAfter(".wp-heading-inline").css("display","inline-block")
+	}
+
+	// Role based controls
+	$("#oxygen_vsb_access_role_settings").on("change", ".oxygen_vsb_access_role_select", (e) => {
+		showHideEditOnlyRoleOptions(e.target)
+	})
+
+	$(".oxygen_vsb_access_role_select").each((index, element) => {
+		showHideEditOnlyRoleOptions(element)
+	})
+
+	function showHideEditOnlyRoleOptions(element) {
+		let accessLevel = element.value,
+			subOptions = $(element).closest(".oxygen_role_access_settings_row").find(".oxygen_role_access_edit_only_sub_options")
+
+		if (accessLevel == "edit_only"){
+			subOptions.show()
+		}
+		else {
+			subOptions.hide()
+		}
+	}
+
+	if (typeof $(".oxygen_role_access_enabled_elements").select2 == "function") {
+		$(".oxygen_role_access_settings_row .oxygen_user_access_enabled_elements").select2({
+			placeholder: "Add Elements...",
+		});
+	}
+
+	$("#oxygen_vsb_access_role_settings").on("change", ".oxygen_vsb_options_role_access_enable_elements", (e) => {
+		showHideRoleElementsSelect(e.target)
+	})
+
+	$(".oxygen_role_access_settings_row .oxygen_vsb_options_role_access_enable_elements").each((index, element) => {
+		showHideRoleElementsSelect(element)
+	})
+
+	function showHideRoleElementsSelect(element){
+
+		let isChecked = $(element).is(":checked"),
+			parentRow = $(element).closest(".oxygen_role_access_settings_row"),
+			elementsSelect = parentRow.find(".oxygen_role_access_enabled_elements"),
+			elementsSelect2 = parentRow.find(".select2"),
+			accessLevelSelect = parentRow.find(".oxygen_vsb_access_role_select"),
+			accessLevelOption = accessLevelSelect.find(":selected"),
+			accessLevel = accessLevelOption[0] ? accessLevelOption[0].value : false
+
+			console.log(isChecked)
+		
+		if (!elementsSelect2.length) {
+			parentRow.find(".oxygen_role_access_enabled_elements").select2({
+				placeholder: "Add Elementss...",
+			});
+			elementsSelect2 = parentRow.find(".select2");
+		}
+		
+		if (isChecked && accessLevel == "edit_only") {
+			elementsSelect.show()
+			elementsSelect2.show()
+		}
+		else {
+			elementsSelect.hide()
+			elementsSelect2.hide()
+		}
+	}
 
 });

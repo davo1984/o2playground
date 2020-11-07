@@ -23,6 +23,10 @@ CTFrontendBuilderUI.controller("ControllerDragnDrop", function($scope, $timeout,
 
     $scope.$parent.$on('iframe-init', function(e, iframeScope) {
 
+        if (CtBuilderAjax.userCanFullAccess!="true"&&CtBuilderAjax.userCanDragNDrop!="true") {
+            return;
+        }
+
         dragulaService.options($scope.iframeScope, 'ct-dom-tree', {
             
             isContainer: function (el) {

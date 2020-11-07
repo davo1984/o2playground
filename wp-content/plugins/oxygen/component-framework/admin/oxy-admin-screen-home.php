@@ -35,9 +35,6 @@
 						<a href='https://oxygenbuilder.com/support'>Contact the Oxygen Support Team</a>
 					</li>
 					<li>
-						<a href='https://oxygenbuilder.com/slack'>Oxygen Slack Chat</a>
-					</li>
-					<li>
 						<a href='https://oxygenbuilder.com/documentation'>Tutorials &amp; Documentation</a>
 					</li>
 				</ul>

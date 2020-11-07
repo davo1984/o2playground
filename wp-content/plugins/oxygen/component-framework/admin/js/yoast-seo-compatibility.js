@@ -1,22 +1,50 @@
-(function($){
-	YoastOxygen = function() {
-		if(typeof(YoastSEO) !== 'undefined') {
-			YoastSEO.app.registerPlugin( 'YoastOxygen', {status: 'ready'} );
-			YoastSEO.app.registerModification( 'content', this.replaceDataWithOxygenMarkup, 'YoastOxygen', 5 );
-		}
-	}
+class OxygenYoastAnalysisHelper {
+    constructor() {
+       // Ensure YoastSEO.js is present and can access the necessary features.
+       if ( typeof YoastSEO === "undefined" || typeof YoastSEO.analysis === "undefined" || typeof YoastSEO.analysis.worker === "undefined" ) {
+            return;
+        }
 
-	/**
-	 * Replaces the full content with Oxygen generated markup, as it is supposed to contain the_content too
-	 *
-	 * @param data The data to modify
-	 */
-	YoastOxygen.prototype.replaceDataWithOxygenMarkup = function(data) {
-		// The full Oxygen generated markup is already enqueued
-		return ysco_data.oxygen_markup;
-	};
+        YoastSEO.app.registerPlugin( "OxygenYoastAnalysisHelper", { status: "ready" } );
+        
+        this.registerModifications();
+    }
 
-	$(document).ready(function(){
-		new YoastOxygen();
-	});
-})(jQuery);
+    /**
+     * Registers the addContent modification.
+     *
+     * @returns {void}
+     */
+    registerModifications() {
+        const callback = this.addContent.bind( this );
+
+        // Ensure that the additional data is being seen as a modification to the content.
+        YoastSEO.app.registerModification( "content", callback, "OxygenYoastAnalysisHelper", 10 );
+    }
+
+    /**
+     * Adds to the content to be analyzed by the analyzer.
+     *
+     * @param {string} data The current data string.
+     *
+     * @returns {string} The data string parameter with the added content.
+     */
+    addContent( data ) {
+        data += ysco_data.oxygen_markup;
+
+        return data ;
+    }
+}
+/**
+ * Adds eventlistener to load the plugin.
+ */
+if ( typeof YoastSEO !== "undefined" && typeof YoastSEO.app !== "undefined" ) {
+  new OxygenYoastAnalysisHelper();
+} else {
+  jQuery( window ).on(
+    "YoastSEO:ready",
+    function() {
+      new OxygenYoastAnalysisHelper();
+    }
+  );
+}

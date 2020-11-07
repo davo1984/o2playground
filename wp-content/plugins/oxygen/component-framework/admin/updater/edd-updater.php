@@ -154,6 +154,7 @@ Class OxygenMainPluginUpdater {
 
 			update_option( $this->prefix . 'license_status', $license_data->license );
 
+			oxygen_vsb_check_is_agency_bundle();
 		}
 	}
 

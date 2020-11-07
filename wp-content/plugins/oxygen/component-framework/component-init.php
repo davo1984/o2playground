@@ -7,6 +7,7 @@ require_once("admin/pages.php");
 require_once("admin/svg-icons.php");
 require_once("admin/import-export.php");
 require_once("admin/updater/edd-updater.php");
+require_once("admin/client-control.php");
 
 require_once("includes/tree-shortcodes.php");
 require_once("includes/templates.php");
@@ -22,6 +23,7 @@ require_once("includes/toolset/oxygen-toolset.php");
 require_once("includes/revisions.php");
 require_once("includes/oxygen-connection.php");
 require_once("includes/conditions.php");
+require_once("includes/updates.php");
 
 // init media queries sizes
 $media_tablet_width = oxygen_vsb_get_breakpoint_width('tablet');
@@ -196,9 +198,9 @@ if ( isset( $_GET['debugger'] ) && $_GET['debugger'] ) {
 add_action('admin_menu', 'oxygen_vsb_add_setup_wizard');
 
 function oxygen_vsb_add_setup_wizard() {
-	add_dashboard_page( '', '', 'manage_options', 'oxygen-vsb-setup', 'oxygen_vsb_setup_wizard_content' );
 
 	if(isset($_GET['page']) && sanitize_text_field($_GET['page']) == 'oxygen-vsb-setup') {
+		add_dashboard_page( '', '', 'manage_options', 'oxygen-vsb-setup', 'oxygen_vsb_setup_wizard_content' );
 		wp_enqueue_style( 'oxygen_vsb_setup_wizard_styles', CT_FW_URI . "/admin/setup_wizard.css");
 	}
 }
@@ -448,29 +450,6 @@ function ct_wp_link_dialog() {
 	_WP_Editors::wp_link_dialog();
 }
 
-function oxygen_vsb_current_user_can_access() {
-
-	// Its the super man
-	if(is_multisite() && is_super_admin()) {
-		return true;
-	}
-
-	$user = wp_get_current_user();
-	
-	if($user && isset($user->roles) && is_array($user->roles)) {
-		foreach($user->roles as $role) {
-			if($role == 'administrator') {
-				return true;
-			}
-			$option = get_option("oxygen_vsb_access_role_$role", false);
-			if( $option && $option == 'true') {
-				return true;
-			}
-		}
-	}
-
-	return false;
-}
 
 /**
  * Check if we are in builder mode
@@ -583,8 +562,9 @@ function ct_oxygen_admin_menu() {
 		return;
 	}
 
-	$wp_admin_bar->add_menu( array( 'id' => 'oxygen_admin_bar_menu', 'title' => __( 'Oxygen', 'component-theme' ), 'href' => FALSE ) );
-
+	if (get_post_meta( $post->ID, 'oxygen_lock_post_edit_mode', true )=="true" && oxygen_vsb_get_user_edit_mode() == "edit_only") {
+        return;
+    }
 
 	$post_id = false;
 	$template = false;
@@ -663,15 +643,27 @@ function ct_oxygen_admin_menu() {
 			$postShortcodes = get_post_meta($post->ID, 'ct_builder_shortcodes', true);
 
 			if($contains_inner_content && $postShortcodes) {
+				if (get_post_meta( $post->ID, 'oxygen_lock_post_edit_mode', true )=="true" && oxygen_vsb_get_user_edit_mode() == "edit_only") {
+					return;
+				}
+				$wp_admin_bar->add_menu( array( 'id' => 'oxygen_admin_bar_menu', 'title' => __( 'Oxygen', 'component-theme' ), 'href' => FALSE ) );
 				$wp_admin_bar->add_menu( array( 'id' => 'edit_post_template', 'parent' => 'oxygen_admin_bar_menu', 'title' => __( 'Edit with Oxygen', 'component-theme' ), 'href' => esc_url(ct_get_post_builder_link( $post->ID )).(($shortcodes && strpos($shortcodes, '[ct_inner_content') !== false)?'&ct_inner=true':'')) );
 			}
 			else {
+				if (get_post_meta( $template->ID, 'oxygen_lock_post_edit_mode', true )=="true" && oxygen_vsb_get_user_edit_mode() == "edit_only") {
+					return;
+				}
+				$wp_admin_bar->add_menu( array( 'id' => 'oxygen_admin_bar_menu', 'title' => __( 'Oxygen', 'component-theme' ), 'href' => FALSE ) );
 				$wp_admin_bar->add_menu( array( 'id' => 'edit_template', 'parent' => 'oxygen_admin_bar_menu', 'title' => __( 'Edit '.$template->post_title.' Template', 'component-theme' ), 'href' => esc_url(get_edit_post_link( $template->ID )) ) );
 			}
 		}
 	}
 	else {
 		if(is_object($post)) {
+			if (get_post_meta( $post->ID, 'oxygen_lock_post_edit_mode', true )=="true" && oxygen_vsb_get_user_edit_mode() == "edit_only") {
+				return;
+			}
+			$wp_admin_bar->add_menu( array( 'id' => 'oxygen_admin_bar_menu', 'title' => __( 'Oxygen', 'component-theme' ), 'href' => FALSE ) );
 			$wp_admin_bar->add_menu( array( 'id' => 'edit_post_template', 'parent' => 'oxygen_admin_bar_menu', 'title' => __( 'Edit with Oxygen', 'component-theme' ), 'href' => esc_url(ct_get_post_builder_link( $post->ID ))) );
 		}
 	}
@@ -1083,6 +1075,21 @@ function ct_enqueue_scripts() {
 	// tabs elements
 	$options["componentsWithTabs"] = apply_filters("oxygen_component_with_tabs", array());
 
+	// access level
+	if (oxygen_vsb_current_user_can_full_access()) {
+		$options["userCanFullAccess"] = "true";
+	}
+	else {
+		$user_edit_mode = oxygen_vsb_get_user_edit_mode();
+		if ($user_edit_mode === "edit_only" ) {
+			$options["userEditOnly"] = "true";
+		}
+	}
+
+	if (oxygen_vsb_user_can_drag_n_drop()) {
+		$options["userCanDragNDrop"] = "true";
+	}
+	
 	/**
 	 * Filter to pass things to Oxygen builder Angular core
 	 *
@@ -1213,6 +1220,7 @@ function ct_init() {
     	add_action("ct_builder_ng_init", "ct_init_element_presets");
     	add_action("ct_builder_ng_init", "ct_init_undo_redo");
     	add_action("ct_builder_ng_init", "ct_init_google_fonts");
+    	add_action("ct_builder_ng_init", "ct_init_user_enabled_elements");
     	
     	add_action("ct_builder_ng_init", "ct_components_tree_init", 100 );
     	
@@ -1446,7 +1454,17 @@ function oxygen_vsb_sync_default_presets() {
 	        	$presets[$element_name] = $defaults[$element_name];
 	        }
         }
-    }
+	}
+	
+	// Remove some presets
+	$to_remove = array('timeline-template','timeline-template2','timeline-template3');
+	if (isset($presets['oxy_posts_grid']) && is_array($presets['oxy_posts_grid'])) {
+		foreach ($presets['oxy_posts_grid'] as $key => $preset) {
+			if (in_array($preset['slug'],$to_remove)) {
+				unset($presets['oxy_posts_grid'][$key]);
+			}
+		}
+	}
 
     update_option("oxygen_vsb_element_presets", $presets);
 
@@ -3353,6 +3371,24 @@ function oxygen_vsb_get_global_styles() {
 			}
 	$css .= "}";
 
+
+	// Sections container padding
+	$css .= ".ct-new-columns > .ct-div-block {\r\n";
+			
+		if ( isset($global_settings['columns']['padding-top']) && $global_settings['columns']['padding-top'] ) {
+			$css .= "padding-top: " . $global_settings['columns']['padding-top'] . $global_settings['columns']['padding-top-unit'] . ";\r\n";
+		}
+		if ( isset($global_settings['columns']['padding-right']) && $global_settings['columns']['padding-right'] ) {
+			$css .= "padding-right: " . $global_settings['columns']['padding-right'] . $global_settings['columns']['padding-right-unit'] . ";\r\n";
+		}
+		if ( isset($global_settings['columns']['padding-bottom']) && $global_settings['columns']['padding-bottom'] ) {
+			$css .= "padding-bottom: " . $global_settings['columns']['padding-bottom'] . $global_settings['columns']['padding-bottom-unit'] . ";\r\n";
+		}
+		if ( isset($global_settings['columns']['padding-left']) && $global_settings['columns']['padding-left'] ) {
+			$css .= "padding-left: " . $global_settings['columns']['padding-left'] . $global_settings['columns']['padding-left-unit'] . ";\r\n";
+		}
+$css .= "}";
+
 	// Sections container padding
 	$css .= ".oxy-header-container {\r\n";
 			
@@ -3456,8 +3492,12 @@ function ct_get_font_families_string( $font_families, $global_settings, $url=fal
 	}
 
 	// don't load ECF fonts
-	if (class_exists('ECF_Plugin')) {
-		$ecf_fonts = ECF_Plugin::get_font_families();
+    global $ECF_Plugin;
+	if (is_a($ECF_Plugin, 'ECF_Plugin')) {
+        $ecf_fonts = $ECF_Plugin->get_font_families();
+        if (!is_array($ecf_fonts)) {
+            $ecf_fonts = array();
+        }
 	} else {
 		$ecf_fonts = array();
 	}
@@ -3867,10 +3907,40 @@ function ct_body_class($classes) {
 	else {
 		$classes[] = 'oxygen-builder-body';	
 	}
+	
+	if ( oxygen_vsb_get_user_edit_mode() == "edit_only" ) {
+		$classes[] = 'oxygen-edit-only-mode';
+	}
+
+	if ( oxygen_vsb_user_has_enabled_elements() ) {
+		$classes[] = 'oxygen-has-enabled-elements';
+	}
+
+	if ( oxygen_vsb_user_can_use_design_library() ) {
+		$classes[] = 'oxygen-can-use-design-library';
+	}
+
+	if ( oxygen_vsb_user_can_use_reusable_parts() ) {
+		$classes[] = 'oxygen-can-use-reusable-parts';
+	}
+
+	if ( oxygen_vsb_user_can_use_advanced_tab() ) {
+		$classes[] = 'oxygen-can-use-advanced-tabs';
+	}
 
 	return $classes;
 }
 add_filter('body_class', 'ct_body_class');
+
+function ct_admin_body_class($classes) {
+
+	if ( oxygen_vsb_get_user_edit_mode() == "edit_only" ) {
+		$classes .= ' oxygen-edit-only-mode';
+	}
+
+	return $classes;
+}
+add_filter('admin_body_class', 'ct_admin_body_class');
 
 
 /**
@@ -4303,6 +4373,17 @@ function ct_get_global_settings($return_defaults = false) {
 						'container-padding-left-unit' 	=> 'px',
 						'container-padding-right' 		=> '20',
 						'container-padding-right-unit' 	=> 'px',
+					),
+				"columns" => 
+					array( 
+						'padding-top' 			=> '20',
+						'padding-top-unit' 		=> 'px',
+						'padding-bottom' 		=> '20',
+						'padding-bottom-unit' 	=> 'px',
+						'padding-left' 			=> '20',
+						'padding-left-unit' 	=> 'px',
+						'padding-right' 		=> '20',
+						'padding-right-unit' 	=> 'px',
 					),
 				"max-width" => 1120,
 				"breakpoints" => array(
@@ -4892,7 +4973,7 @@ function ct_getBackgroundLayersCSS($stateOptions, $default_atts = false) {
 				array_push($colorStrings, $colorStrings[0]);
 			}
 
-			$styleBuffer .= implode($colorStrings, ', ');
+			$styleBuffer .= implode(', ', $colorStrings);
 		}
 
 		$styleBuffer .= ')';
@@ -4946,11 +5027,11 @@ function ct_getBackgroundLayersCSS($stateOptions, $default_atts = false) {
 		array_push($styles, 'url('.do_shortcode($stateOptions['background-image']).')');
 	}
 
-	$image = implode($styles, ', ');
+	$image = implode(', ', $styles);
 	$style = "";
 
 	if ($image!=='') {
-		$style = 'background-image:' . implode($styles, ', ') .';';
+		$style = 'background-image:' . implode(', ', $styles) .';';
 	}
 
 	// if(strlen($style) > 0 ) {
@@ -4962,7 +5043,7 @@ function ct_getBackgroundLayersCSS($stateOptions, $default_atts = false) {
 	// }
 
 	if(sizeof($backgroundSize) > 0) {
-		$style .= 'background-size:' . implode($backgroundSize, ', ') . ';';
+		$style .= 'background-size:' . implode(', ', $backgroundSize) . ';';
 	}
 		
 	return $style;
@@ -5138,24 +5219,32 @@ function ct_filter_content( $type, $content = array() ) {
 				'classSuggestionsLimit' => 'sanitize_text_field',
 				'headings' => array(
 					'/^.*$/' => array(
+                        '/^.*-unit$/' => 'ct_filter_option_unit',  // unit fields
 						'/^.*$/' => 'sanitize_text_field'
 					),
 				),
 				'body_text' => array(
+                    '/^.*-unit$/' => 'ct_filter_option_unit',  // unit fields
 					'/^.*$/' => 'sanitize_text_field'
 				),
 				'links' => array(
 					'/^.*$/' => array(
+                        '/^.*-unit$/' => 'ct_filter_option_unit',  // unit fields
 						'/^.*$/' => 'sanitize_text_field'
 					),
 				),
 				'sections' => array(
+                    '/^.*-unit$/' => 'ct_filter_option_unit',  // unit fields
+					'/^.*$/' => 'sanitize_text_field'
+				),
+				'columns' => array(
 					'/^.*$/' => 'sanitize_text_field'
 				),
 				'aos' => array(
 					'/^.*$/' => 'sanitize_text_field'
 				),
 				'woo' => array(
+                    '/^.*-unit$/' => 'ct_filter_option_unit',  // unit fields
 					'/^.*$/' => 'sanitize_text_field'
 				),
 				'max-width' => 'sanitize_text_field',
@@ -5201,6 +5290,7 @@ function ct_filter_content( $type, $content = array() ) {
 									),
 									'/^.*$/' => 'sanitize_text_field',
 								),
+                                '/^.*-unit$/' => 'ct_filter_option_unit',  // unit fields
 								'/^.*$/' => 'sanitize_text_field',  // Arbitrary fields
 							)
 						)
@@ -5220,6 +5310,7 @@ function ct_filter_content( $type, $content = array() ) {
 							),
 							'/^.*$/' => 'sanitize_text_field',
 						),
+						'/^.*-unit$/' => 'ct_filter_option_unit',  // unit fields
 						'/^.*$/' => 'sanitize_text_field',  // Arbitrary fields
 					)
 				)
@@ -5251,6 +5342,7 @@ function ct_filter_content( $type, $content = array() ) {
 									),
 									'/^.*$/' => 'sanitize_text_field',
 								),
+                                '/^.*-unit$/' => 'ct_filter_option_unit',  // unit fields
 								'/^.*$/' => 'sanitize_text_field',  // Arbitrary fields
 							),
 						)
@@ -5270,6 +5362,7 @@ function ct_filter_content( $type, $content = array() ) {
 							),
 							'/^.*$/' => 'sanitize_text_field',
 						),
+						'/^.*-unit$/' => 'ct_filter_option_unit',  // unit fields
 						'/^.*$/' => 'sanitize_text_field',  // Arbitrary fields
 					)
 				)
@@ -5357,6 +5450,18 @@ function ct_filter_content( $type, $content = array() ) {
 	
 	// Allow plugins to expand content that are allowed to be used
 	return apply_filters( 'oxygen_vsb_component_filter_content', $new_content, $type, $content, $filter_keys );
+}
+
+/**
+ * Filter option units
+ */
+function ct_filter_option_unit($data)
+{
+    if ($data !== ' ') {
+        $data = sanitize_text_field($data);
+    }
+
+    return $data;
 }
 
 /**
@@ -5730,3 +5835,37 @@ function oxygen_vsb_custom_attributes($options) {
 	echo $attrs;
 }   
 add_action("oxygen_vsb_component_attr", "oxygen_vsb_custom_attributes");
+
+function oxygen_vsb_check_is_agency_bundle() {
+
+	$license_key = trim( get_option( 'oxygen_license_key' ) );
+
+	$url = "https://oxygenbuilder.com/";
+    $args = array(
+        "body" => array(
+            "oxy_check_bundle_lisence" => $license_key,
+        )
+    );
+
+	$response = wp_remote_get( $url, $args );
+	
+	if ( is_wp_error( $response ) ) {
+		update_option("oxygen_vsb_is_agency_bundle", false);
+		return;
+	}
+		
+	$body = wp_remote_retrieve_body($response);
+
+	$data = json_decode($body, true);
+	
+    if (!empty($data["is_bundle"])) {
+		update_option("oxygen_vsb_is_agency_bundle", $data["is_bundle"]);
+        return;
+    }
+
+    update_option("oxygen_vsb_is_agency_bundle", false);
+}
+
+function oxygen_vsb_is_agency_bundle() {
+	return get_option("oxygen_vsb_is_agency_bundle", false);
+}

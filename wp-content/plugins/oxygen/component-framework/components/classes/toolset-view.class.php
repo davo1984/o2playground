@@ -60,7 +60,13 @@ Class CT_Toolset_View extends CT_Component {
 	 * @since 2.1
 	 */
 	
-	function component_button() { ?>
+	function component_button() { 
+
+		if (oxygen_hide_element_button('ct_toolset_view')) {
+			return;
+		}
+		
+		?>
 
         <div class="oxygen-add-section-element"
 			data-searchid="<?php echo strtolower( preg_replace('/\s+/', '_', sanitize_text_field( $this->options['name'] ) ) ) ?>"

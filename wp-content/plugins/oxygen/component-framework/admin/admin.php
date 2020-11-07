@@ -44,14 +44,14 @@ function ct_enqueue_admin_scripts( $hook ) {
 	wp_enqueue_style ( 'ct-admin-style', CT_FW_URI . "/admin/admin.css" );
     
     // load specific scrpits only here 
-    if ( 'post.php' != $hook && 'post-new.php' != $hook && 'edit.php' != $hook ) {
+    if ( 'post.php' != $hook && 'post-new.php' != $hook && 'edit.php' != $hook && 'oxygen_page_oxygen_vsb_settings' != $hook ) {
         return;
     }
 
     $screen = get_current_screen();
 
-    // include only on Views screen
-    if ( $screen->post_type == "ct_template" ) {
+    // include only on Views screen and Oxygen > Settings
+    if ( $screen->post_type == "ct_template" || 'oxygen_page_oxygen_vsb_settings' == $hook ) {
         wp_enqueue_script( 'select2', CT_FW_URI . "/vendor/select2/select2.full.min.js", array( 'jquery' ) );
     	wp_enqueue_style ( 'select2', CT_FW_URI . "/vendor/select2/select2.min.css" );
     }
@@ -101,7 +101,10 @@ function ct_shortcodes_save_meta_box( $post_id ) {
 	$shortcodes = parse_components_tree( $components['content'] );
 
 	// template type
-	update_post_meta( $post_id, 'ct_builder_shortcodes', $shortcodes );
+    update_post_meta( $post_id, 'ct_builder_shortcodes', $shortcodes );
+    
+    // Lock Post In Edit Mode
+	update_post_meta( $post_id, 'oxygen_lock_post_edit_mode', $_POST['oxygen_lock_post_edit_mode'] );
 }
 add_action( 'save_post', 'ct_shortcodes_save_meta_box' );
 
@@ -256,7 +259,7 @@ add_action( 'admin_notices', 'oxygen_vsb_themes_screen_notice' );
  * @since 3.3
  * @author Abdelouahed E.
  */
-function oxygen_add_posts_quick_action_link($actions, $post) {
+function oxygen_add_posts_quick_action_link($actions, $post, $return_type = "filter") {
     $post_ID = $post->ID;
     $post_type = $post->post_type;
     
@@ -268,7 +271,13 @@ function oxygen_add_posts_quick_action_link($actions, $post) {
         return $actions;
     }
     
+    // check if Oxygen is open somewhere and threfore blocked
     if (is_oxygen_edit_post_locked()) {
+        return $actions;
+    }
+
+    // check if post blocked manually for "edit only" users
+	if ($return_type == "filter" && get_post_meta( $post_ID, 'oxygen_lock_post_edit_mode', true )=="true" && oxygen_vsb_get_user_edit_mode() == "edit_only") {
         return $actions;
     }
     
@@ -352,6 +361,10 @@ function oxygen_add_posts_quick_action_link($actions, $post) {
                 $edit_link_href = add_query_arg('ct_inner', 'true', $edit_link_href);
             }
         } else if ($edit_template) {
+            // check if template blocked manually for "edit only" users
+            if ($return_type == "filter" && get_post_meta( $edit_template, 'oxygen_lock_post_edit_mode', true )=="true" && oxygen_vsb_get_user_edit_mode() == "edit_only") {
+                return $actions;
+            }
             $edit_link_href = ct_get_post_builder_link($edit_template);
             $edit_link_text = __("Edit Template", "oxygen");
         }
@@ -361,7 +374,18 @@ function oxygen_add_posts_quick_action_link($actions, $post) {
         $actions['oxy_edit'] = sprintf('<a class="edit" href="%s">%s</a>', $edit_link_href, $edit_link_text);
     }
     
-    return $actions;
+    if ( $return_type == "filter" ) {
+        return $actions;
+    }
+
+    if ( $return_type == "array" ) {
+        return array(
+            "url" => $edit_link_href,
+            "text" => $edit_link_text,
+            "template" => $edit_template
+        );
+    }
+
 }
 
 add_filter('page_row_actions', 'oxygen_add_posts_quick_action_link', 10, 2);

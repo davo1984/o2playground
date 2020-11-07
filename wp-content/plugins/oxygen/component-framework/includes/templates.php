@@ -581,7 +581,7 @@ function ct_get_templates_post( $template_id, $current_post_id = false, $option 
 	// look in cache
 	$posts = wp_cache_get("ct_archive_template_posts_" . $template_id );
 	
-	if ( ! $posts[$new_post_key] ) {
+	if ( !$posts || !$posts[$new_post_key] ) {
 
 		/**
 		 * Query arguments 
@@ -822,8 +822,7 @@ function ct_get_templates_term( $template_id, $term_id = false, $option = false,
 	// look in cache
 	$terms = wp_cache_get("ct_archive_template_terms" . $template_id );
 	
-
-	if ( !$terms[$new_term_key] ) {
+	if ( !$terms || !$terms[$new_term_key] ) {
 		$limit = get_option('oxygen_vsb_preview_dropdown_limit');
 		$post_type_args = array();
 		if ( get_option('oxygen_vsb_preview_dropdown_exclude_non_public') ) {

@@ -87,6 +87,7 @@ if (!class_exists('Oxygen_VSB_CSS_Util')) {
 
             ob_start();
 
+            if (is_array($this->css_selectors)) 
             foreach ($this->css_selectors as $css_selector => $css_properties) {
 
                 $css_selector = explode(",", $css_selector);

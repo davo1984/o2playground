@@ -262,6 +262,9 @@ Class Oxy_Toggle extends CT_Component {
                 } else {
                     jQuery(toggle_target).toggle();
                 }
+
+                // force 3rd party plugins to rerender things inside the toggle
+                jQuery(window).trigger('resize');
             });
 		</script>
 

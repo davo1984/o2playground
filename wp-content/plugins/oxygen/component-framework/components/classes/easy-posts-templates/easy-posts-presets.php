@@ -168,41 +168,5 @@
                 )
             )
 	    ),
-
-	    array(
-            "name" => __("Timeline - Title & Excerpt","oxygen"),
-            "slug" => "timeline-template",
-            "options" => array(
-            	"original" => array(
-                    "code-php" => file_get_contents(OXYGEN_VSB_EASY_POSTS_TEMPLATES_PATH."timeline-template.php"),
-                    "code-css" => '',
-                    "title_size"=>"2","title_size-unit"=>"em","title_color"=>"white","title_hover_color"=>"","meta_size"=>"","meta_size-unit"=>"px","meta_color"=>"","content_size"=>"","content_size-unit"=>"px","content_color"=>"","read_more_display_as"=>"button","read_more_size"=>"","read_more_size-unit"=>"px","read_more_text_color"=>"","read_more_text_hover_color"=>"","read_more_button_color"=>"","read_more_button_hover_color"=>"","paginate_color"=>"","paginate_alignment"=>"center","paginate_link_color"=>"","paginate_link_hover_color"=>"","posts_5050_below"=>"never","posts_100_below"=>"never",
-                )
-            )
-	    ),
-
-	    array(
-            "name" => __("Timeline - Title & Featured Image","oxygen"),
-            "slug" => "timeline-template2",
-            "options" => array(
-            	"original" => array(
-                    "code-php" => file_get_contents(OXYGEN_VSB_EASY_POSTS_TEMPLATES_PATH."timeline-template2.php"),
-                    "code-css" => '',
-                    "title_size"=>"2","title_size-unit"=>"em","title_color"=>"white","title_hover_color"=>"","meta_size"=>"","meta_size-unit"=>"px","meta_color"=>"","content_size"=>"","content_size-unit"=>"px","content_color"=>"","read_more_display_as"=>"button","read_more_size"=>"","read_more_size-unit"=>"px","read_more_text_color"=>"","read_more_text_hover_color"=>"","read_more_button_color"=>"","read_more_button_hover_color"=>"","paginate_color"=>"","paginate_alignment"=>"center","paginate_link_color"=>"","paginate_link_hover_color"=>"","posts_5050_below"=>"never","posts_100_below"=>"never",
-                )
-            )
-	    ),
-
-	    array(
-            "name" => __("Timeline - Title, Featured Image & Excerpt","oxygen"),
-            "slug" => "timeline-template3",
-            "options" => array(
-            	"original" => array(
-                    "code-php" => file_get_contents(OXYGEN_VSB_EASY_POSTS_TEMPLATES_PATH."timeline-template3.php"),
-                    "code-css" => '',
-                    "title_size"=>"2","title_size-unit"=>"em","title_color"=>"white","title_hover_color"=>"","meta_size"=>"","meta_size-unit"=>"px","meta_color"=>"","content_size"=>"","content_size-unit"=>"px","content_color"=>"","read_more_display_as"=>"button","read_more_size"=>"","read_more_size-unit"=>"px","read_more_text_color"=>"","read_more_text_hover_color"=>"","read_more_button_color"=>"","read_more_button_hover_color"=>"","paginate_color"=>"","paginate_alignment"=>"center","paginate_link_color"=>"","paginate_link_hover_color"=>"","posts_5050_below"=>"never","posts_100_below"=>"never",
-                )
-            )
-	   )
     )
 );

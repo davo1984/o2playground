@@ -569,6 +569,11 @@ Class CT_Component {
 	 */
 
 	function component_button() { 
+
+		if (oxygen_hide_element_button($this->options['tag'])) {
+			return;
+		}
+		
 		$icon = str_replace(" ", "", (strtolower($this->options['name']))); ?>
 
 		<div class='oxygen-add-section-element'
@@ -1519,9 +1524,9 @@ Class CT_Component {
 										ng-show="(isActiveParentName('ct_columns')||isActiveParentName('ct_new_columns'))&&!$parent.iframeScope.isEditing('class')">
 										<div class='oxygen-measure-box-selected-unit'>%</div>
 									</div>
-									<div class='oxygen-measure-box-unit-selector'
+									<div class='oxygen-measure-box-unit-selector' ng-class="{'oxygen-measure-box-unit-none':iframeScope.getOptionUnit('<?= esc_attr( $param['param_name'] ); ?>')==' '}"
 										ng-show="(!isActiveParentName('ct_columns')&&!isActiveParentName('ct_new_columns'))||$parent.iframeScope.isEditing('class')">
-										<div class='oxygen-measure-box-selected-unit'>{{iframeScope.getOptionUnit('<?php echo esc_attr( $param['param_name'] ); ?>')}}</div>
+										<div class='oxygen-measure-box-selected-unit'>{{iframeScope.getOptionUnitLabel('<?php echo esc_attr( $param['param_name'] ); ?>')}}</div>
 										<?php $oxygen_toolbar->measure_type_select($param['param_name']); ?>
 									</div>
 								</div>
@@ -2298,7 +2303,7 @@ Class CT_Component {
 		$states['original']['classes'] = str_replace( "_", "-", $this->options['tag'] );
 
 		if ( isset($states['classes']) && is_array( $states['classes'] ) ) {
-			$states['original']['classes'] .= " " . join($states['classes'], " ");
+			$states['original']['classes'] .= " " . join(" ", $states['classes']);
 		}
 
 		if ( isset( $_GET["oxygen_gutenberg_script"] ) ) {
@@ -2579,6 +2584,7 @@ Class CT_Component {
 				$oxy_nav_menu_styles_active 			= "";
 				$oxy_nav_menu_styles_dropdowns_items_hover = "";
 				$oxy_nav_menu_styles_not_open_items 	= "";
+                $oxy_nav_menu_styles_dropdowns          = "";
 
 
 				if (!isset($states['original']['menu_dropdowns_background-color'])){
@@ -2586,7 +2592,7 @@ Class CT_Component {
 				}
 				
 				if (isset($states['original']['menu_hover_background-color'])&&(!isset($states['original']['menu_dropdowns_background-color']) || !$states['original']['menu_dropdowns_background-color'])) {
-					$oxy_nav_menu_styles_dropdowns = "background-color:" . oxygen_vsb_get_global_color_value($states['original']['menu_hover_background-color']) . ";";
+					$oxy_nav_menu_styles_dropdowns .= "background-color:" . oxygen_vsb_get_global_color_value($states['original']['menu_hover_background-color']) . ";";
 				}
 
 				$oxy_nav_menu_styles_dropdowns_items = "border: 0;";
@@ -2626,10 +2632,10 @@ Class CT_Component {
 
 				if ( $key=="original" && !$is_media ) {
 
-					$padding_top = ((isset($states['original']['menu_responsive_padding_top'])&&$states['original']['menu_responsive_padding_top']) ? $states['original']['menu_responsive_padding_top'] : $states['original']['menu_padding-top']);
-					$padding_bottom = ((isset($states['original']['menu_responsive_padding_bottom'])&&$states['original']['menu_responsive_padding_bottom']) ? $states['original']['menu_responsive_padding_bottom'] : $states['original']['menu_padding-bottom']);
-					$padding_left = ((isset($states['original']['menu_responsive_padding_left'])&&$states['original']['menu_responsive_padding_left']) ? $states['original']['menu_responsive_padding_left'] : $states['original']['menu_padding-left']);
-					$padding_right = ((isset($states['original']['menu_responsive_padding_right'])&&$states['original']['menu_responsive_padding_right']) ? $states['original']['menu_responsive_padding_right'] : $states['original']['menu_padding-right']);
+					$padding_top = ((isset($states['original']['menu_responsive_padding_top'])&&$states['original']['menu_responsive_padding_top']) ? $states['original']['menu_responsive_padding_top'] : (isset($states['original']['menu_padding-top']) ? $states['original']['menu_padding-top'] : ""));
+					$padding_bottom = ((isset($states['original']['menu_responsive_padding_bottom'])&&$states['original']['menu_responsive_padding_bottom']) ? $states['original']['menu_responsive_padding_bottom'] : (isset($states['original']['menu_padding-bottom']) ? $states['original']['menu_padding-bottom'] : ""));
+					$padding_left = ((isset($states['original']['menu_responsive_padding_left'])&&$states['original']['menu_responsive_padding_left']) ? $states['original']['menu_responsive_padding_left'] : (isset($states['original']['menu_padding-left']) ? $states['original']['menu_padding-left'] : ""));
+					$padding_right = ((isset($states['original']['menu_responsive_padding_right'])&&$states['original']['menu_responsive_padding_right']) ? $states['original']['menu_responsive_padding_right'] : (isset($states['original']['menu_padding-right']) ? $states['original']['menu_padding-right'] : ""));
 
 				$styles 
 					.= '#' . $selector . ".oxy-nav-menu.oxy-nav-menu-open {";
@@ -3051,15 +3057,27 @@ Class CT_Component {
 				}
 				else if (!$is_media) {
 					$buttonStyle 		= $this->css_states['original']['button-style'];
-					$buttonColor 		= oxygen_vsb_get_global_color_value($this->states[$key]['button-color']);
-					$buttonTextColor 	= oxygen_vsb_get_global_color_value($this->states[$key]['button-text-color']);
-					$buttonSize 		= $this->states[$key]['button-size'];
+
+                    if (isset($this->states[$key]['button-color']))
+                        $buttonColor 		= oxygen_vsb_get_global_color_value($this->states[$key]['button-color']);
+
+                    if (isset($this->states[$key]['button-text-color']))
+                        $buttonTextColor 	= oxygen_vsb_get_global_color_value($this->states[$key]['button-text-color']);
+
+                    if (isset($this->states[$key]['button-size']))
+                        $buttonSize 		= $this->states[$key]['button-size'];
 				}
 				else {
 					$buttonStyle 		= $this->css_states['original']['button-style'];
-					$buttonColor 		= oxygen_vsb_get_global_color_value($this->states['media'][$is_media][$key]['button-color']);
-					$buttonTextColor 	= oxygen_vsb_get_global_color_value($this->states['media'][$is_media][$key]['button-text-color']);
-					$buttonSize 		= $this->states['media'][$is_media][$key]['button-size'];
+
+                    if (isset($this->states['media'][$is_media][$key]['button-color']))
+                        $buttonColor 		= oxygen_vsb_get_global_color_value($this->states['media'][$is_media][$key]['button-color']);
+
+                    if (isset($this->states['media'][$is_media][$key]['button-text-color']))
+                        $buttonTextColor 	= oxygen_vsb_get_global_color_value($this->states['media'][$is_media][$key]['button-text-color']);
+
+                    if (isset($this->states['media'][$is_media][$key]['button-size']))
+                        $buttonSize 		= $this->states['media'][$is_media][$key]['button-size'];
 				}
 				
 				$styles .= ( $key != 'original') ? "#$selector:$key  {\r\n" : "#$selector {\r\n";		
@@ -3109,7 +3127,7 @@ Class CT_Component {
 				else {
 					$iconStyle 			= $this->css_states['original']['icon-style'];
 					$iconColor 			= oxygen_vsb_get_global_color_value($this->states['media'][$is_media][$key]['icon-color']);
-					$iconBackgroundColor= oxygen_vsb_get_global_color_value($this->states['media'][$is_media][$key]['icon-background-color']);
+					$iconBackgroundColor= isset($this->states['media'][$is_media][$key]['icon-background-color']) ? oxygen_vsb_get_global_color_value($this->states['media'][$is_media][$key]['icon-background-color']) : false;
 					$iconPadding 		= (isset($this->states['media'][$is_media][$key]['icon-padding']) && $this->states['media'][$is_media][$key]['icon-padding']) ? $this->states['media'][$is_media][$key]['icon-padding']."px" : "";
 					$iconSize 			= (isset($this->states['media'][$is_media][$key]['icon-size']) && $this->states['media'][$is_media][$key]['icon-size']) ? $this->states['media'][$is_media][$key]['icon-size']."px" : "";
 				}
@@ -3616,6 +3634,14 @@ Class CT_Component {
 
 	static function get_width( $width ) {
 
+		// return array value as is
+		if ( is_array($width) ) {
+			return array(
+				"value" => $width,
+				"units" => ''
+			);
+		}
+
 		$value = self::int_val( $width );
 		$units = '';
 						
@@ -4035,22 +4061,22 @@ Class CT_Component {
 
 			// Translate
 			if ($transform['transform-type']=='translate') {
-				if ($transform['translateX'] && $transform['translateY'] && $transform['translateZ']) {
+				if (!empty($transform['translateX']) && !empty($transform['translateY']) && !empty($transform['translateZ'])) {
 					$css .= "translate3d("
 						. $transform['translateX'] . (isset($transform['translateX-unit']) ? $transform['translateX-unit'] : $defaults['translateX-unit']) . "," 
 						. $transform['translateY'] . (isset($transform['translateY-unit']) ? $transform['translateY-unit'] : $defaults['translateY-unit']) . ","
 						. $transform['translateZ'] . (isset($transform['translateZ-unit']) ? $transform['translateZ-unit'] : $defaults['translateZ-unit']) . ")";
 				}
-				else if ($transform['translateX'] && $transform['translateY']) {
+				else if (!empty($transform['translateX']) && !empty($transform['translateY'])) {
 					$css .= $transform['transform-type'] . "(" 
 						. $transform['translateX'] . (isset($transform['translateX-unit']) ? $transform['translateX-unit'] : $defaults['translateX-unit']) . ',' 
 						. $transform['translateY'] . (isset($transform['translateY-unit']) ? $transform['translateY-unit'] : $defaults['translateY-unit']) . ")";
 				}
-				else if ($transform['translateX']) {
+				else if (!empty($transform['translateX'])) {
 					$css .= $transform['transform-type'] . "(" 
 						. $transform['translateX'] . (isset($transform['translateX-unit']) ? $transform['translateX-unit'] : $defaults['translateX-unit']) . ")";
 				}
-				else if ($transform['translateY']) {
+				else if (!empty($transform['translateY'])) {
 					$css .= "translateY" . "(" 
 						. $transform['translateY'] . (isset($transform['translateY-unit']) ? $transform['translateY-unit'] : $defaults['translateY-unit']) . ")";
 				}

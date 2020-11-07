@@ -235,9 +235,6 @@ div.ct-fancy-icon {
 .ct-columns-inner-wrap > .ct-column:last-child {
   margin-right: 0 !important;
 }
-.ct-new-columns > .ct-div-block {
-  padding: 20px;
-}
 .ct-video {
   width: 100%;
 }
@@ -987,4 +984,10 @@ div.oxy-dynamic-list div.oxy-product-images.oxy-woo-element {
 }
 div.oxy-repeater-pages, div.oxy-repeater-pages-wrap {
   display: flex;
+}
+.oxy-rich-text p:first-child {
+  margin-block-start: 0; 
+}
+.oxy-rich-text p:last-child {
+  margin-block-end: 0;
 }

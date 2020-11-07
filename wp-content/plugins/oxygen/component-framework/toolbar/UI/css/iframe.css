@@ -818,3 +818,19 @@ span.ct-contains-oxy:empty::after {
   z-index: 1;
   position: relative;
 }
+
+/* Edit Mode CSS */
+
+.oxygen-edit-only-mode .oxygen-resize-box-breadcrumbs {
+  padding-left: 5px;
+}
+.oxygen-edit-only-mode:not(.oxygen-can-use-advanced-tabs) #rb-margin-top,
+.oxygen-edit-only-mode:not(.oxygen-can-use-advanced-tabs) #rb-margin-left,
+.oxygen-edit-only-mode:not(.oxygen-can-use-advanced-tabs) #rb-margin-right,
+.oxygen-edit-only-mode:not(.oxygen-can-use-advanced-tabs) #rb-margin-bottom,
+.oxygen-edit-only-mode:not(.oxygen-can-use-advanced-tabs) #rb-padding-top,
+.oxygen-edit-only-mode:not(.oxygen-can-use-advanced-tabs) #rb-padding-left,
+.oxygen-edit-only-mode:not(.oxygen-can-use-advanced-tabs) #rb-padding-right,
+.oxygen-edit-only-mode:not(.oxygen-can-use-advanced-tabs) #rb-padding-bottom {
+  display: none !important;
+}

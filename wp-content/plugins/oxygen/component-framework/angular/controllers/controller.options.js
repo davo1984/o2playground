@@ -2506,6 +2506,65 @@ CTFrontendBuilder.controller("ControllerOptions", function($scope, $parentScope,
         return "";
     }
 
+    /**
+     * Transform unit to display label
+     * 
+     * @author Abdelouahed E.
+     * @since 3.6
+     * 
+     * @param {string} unit unit value
+     * @return {string}
+     */
+    $scope.getUnitLabel = function (unit) {
+        var label = unit;
+
+        // None unit
+        if (unit == ' ') {
+            label = '–';
+        }
+
+        return label;
+    }
+
+    /**
+     * Transform option unit to label (added mainly for the none unit)
+     * 
+     * @author Abdelouahed E.
+     * @since 3.6
+     * 
+     * @param {string} option Option name
+     * @return {string}
+     */
+    $scope.getOptionUnitLabel = function(option) {
+        var unit = $scope.getOptionUnit(option);
+        return $scope.getUnitLabel(unit);
+    };
+
+    /**
+     * Set global option unit like 'px', 'em' for options like margin, padding, etc
+     * 
+     * @author Abdelouahed E.
+     * @since 3.6
+     * 
+     * @param {string} context context object: page or global
+     * @param {string} option option path
+     * @param {string} value unit value
+     */
+    $scope.setGlobalOptionUnit = function(context, option, value) {
+
+        var optionPath = option+"-unit";
+        var contextObject = context == 'page' ? $scope.pageSettingsMeta : $scope.globalSettings;
+
+        objectPath.set(contextObject, optionPath, value);
+        
+        if (context == 'page') {
+            $scope.outputPageSettingsCSS();
+        } else {
+            $scope.updateGlobalSettingsCSS();
+        }
+        
+        $scope.unsavedChanges();
+    }
 
     /**
      * Get option unit like 'px', 'em' for options like margin, padding, etc
@@ -2513,25 +2572,26 @@ CTFrontendBuilder.controller("ControllerOptions", function($scope, $parentScope,
      * @since 2.2
      * @return {string}
      */
-    
     $scope.getGlobalOptionUnit = function(context, option) {
+        var optionPath = option+"-unit";
+        var contextObject = context == 'page' ? $scope.pageSettingsMeta : $scope.globalSettings;
 
-        var optionName = option+"-unit";
-
-        if (context=='page') {
-            if ( $scope.pageSettingsMeta && $scope.pageSettingsMeta[optionName] ) {
-                return $scope.pageSettingsMeta[optionName];
-            }
-        }
-
-        if (context=='global') {
-            if ( $scope.globalSettings && $scope.globalSettings[optionName] ) {
-                return $scope.globalSettings[optionName];
-            }
-        }
-
-        return '';
+        return objectPath.get(contextObject, optionPath, '');
     }
+
+    /**
+     * Transform option unit to label (added mainly for the none unit)
+     * 
+     * @author Abdelouahed E.
+     * @since 3.6
+     * 
+     * @param {string} option Option name
+     * @return {string}
+     */
+    $scope.getGlobalOptionUnitLabel = function(context, option) {
+        var unit = $scope.getGlobalOptionUnit(context, option);
+        return $scope.getUnitLabel(unit);
+    };
 
 
     /**
@@ -4180,7 +4240,7 @@ CTFrontendBuilder.controller("ControllerOptions", function($scope, $parentScope,
 
                 if (!nameHasDynamicData && !valueHasDynamicData) {
                     var component = $scope.getComponentById(id)
-                    if (component.attr) {
+                    if (component.attr && attr['name']) {
                         component.attr(attr['name'],attr['value'])
                     }
                 }

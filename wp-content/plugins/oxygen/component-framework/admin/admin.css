@@ -683,3 +683,119 @@ div#ct-connection-category {
     opacity: 0.4;
     pointer-events: none;
 }
+
+/* Client Control Tab */
+#oxygen_user_access_placeholder {
+    display: none;
+}
+.oxygen_user_access_edit_only_sub_options label {
+    opacity: 0.9;
+}
+.oxygen_user_access_edit_only_sub_options label:hover {
+    opacity: 1;
+}
+.oxygen_role_access_edit_only_sub_options label span,
+.oxygen_user_access_edit_only_sub_options label span {
+    opacity: 0.8;
+    font-style: italic;
+}
+.oxygen_user_access_edit_only_sub_options,
+.oxygen_user_access_enabled_elements {
+    display: none;
+}
+#oxygen_vsb_access_role_settings .select2-selection,
+#oxygen_user_access_table .select2-selection {
+    width: 300px;
+}
+#oxygen_user_access_table .select2-selection ul{
+    display: block;
+}
+#oxygen_user_access_table .select2-selection li{
+    margin-bottom: 0;
+}
+#oxygen_user_access_table .select2-selection input{
+    margin-top: 0;
+}
+.welcome-panel .welcome-panel-close:before {
+    position: absolute;
+    top: 8px;
+    left: 0;
+    transition: all .1s ease-in-out;
+}
+.welcome-panel .welcome-panel-close:before {
+    margin: 0;
+}
+.oxygen-user-access-settings-row {
+    margin-bottom: 30px;
+}
+.oxygen_user_access_remove_user {
+    text-decoration: none;
+}
+.oxygen_user_access_remove_user:before {
+    background: 0 0;
+    color: #72777c;
+    content: "\f153";
+    display: inline-block;
+    font: normal 19px/20px dashicons;
+    speak: none;
+    height: 20px;
+    text-align: center;
+    width: 20px;
+    position: relative;
+    top: 4px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.oxygen-edit-mode-button {
+    display: none;
+    height: 100% !important;
+    padding: 5px;
+    background: #4f88f9;
+    background-image: linear-gradient(#4f88f9, #317af7);
+}
+.oxygen-edit-mode-button:hover {
+    opacity: 0.9;
+}
+.oxygen-edit-mode-button-disabled {
+    filter: grayscale();
+}
+.oxygen-edit-mode-button img {
+    height: 100% !important;
+}
+
+.oxygen-edit-mode-button-non-gutenberg.oxygen-edit-mode-button-non-gutenberg {
+    display: none;
+    background: #4f88f9;
+    color: #ffffff !important;
+}
+.wrap .oxygen-edit-mode-button-non-gutenberg:hover {
+    background: #3176ff;
+    color: #ffffff !important;
+}
+.wrap .oxygen-edit-mode-button-non-gutenberg img {
+    height: 1em;
+}
+
+.oxygen-edit-mode-button-template,
+.oxygen-edit-mode-button-template:hover,
+.wrap .oxygen-edit-mode-button-template,
+.wrap .oxygen-edit-mode-button-template:hover {
+    background: #7046db;
+    background-image: linear-gradient(#7046db, #5A3EC3);
+}
+
+.oxygen_user_access_edit_only_sub_options {
+    border-left: 1px solid rgb(187, 180, 180);
+    padding-left: 8px;
+    padding-top: 14px;
+    margin-left: 9px;
+}
+.oxygen_role_access_edit_only_sub_options {
+    display: none;
+}
+.oxygen_role_access_enabled_elements {
+    display: none;
+}
+.oxygen-edit-only-mode.post-type-ct_template .page-title-action{
+    display: none;
+}

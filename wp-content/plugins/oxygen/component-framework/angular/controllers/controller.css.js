@@ -5544,6 +5544,13 @@ CTFrontendBuilder.controller("ControllerCSS", function($scope, $parentScope, $ht
 		css += "padding-bottom: "+$scope.globalSettings.sections["container-padding-bottom"] + $scope.globalSettings.sections["container-padding-bottom-unit"] + ";";
 		css += "}";
 
+		css += ".ct-new-columns > .ct-div-block {";
+		css += "padding-top: "+$scope.globalSettings.columns["padding-top"] + $scope.globalSettings.columns["padding-top-unit"] + ";";
+		css += "padding-left: "+$scope.globalSettings.columns["padding-left"] + $scope.globalSettings.columns["padding-left-unit"] + ";";
+		css += "padding-right: "+$scope.globalSettings.columns["padding-right"] + $scope.globalSettings.columns["padding-right-unit"] + ";";
+		css += "padding-bottom: "+$scope.globalSettings.columns["padding-bottom"] + $scope.globalSettings.columns["padding-bottom-unit"] + ";";
+		css += "}";
+
 		css += ".oxy-header-container {";
 		css += "padding-left: "+$scope.globalSettings.sections["container-padding-left"] + $scope.globalSettings.sections["container-padding-left-unit"] + ";";
 		css += "padding-right: "+$scope.globalSettings.sections["container-padding-right"] + $scope.globalSettings.sections["container-padding-right-unit"] + ";";

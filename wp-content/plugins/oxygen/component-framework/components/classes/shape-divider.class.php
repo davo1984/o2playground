@@ -45,7 +45,13 @@ class Oxygen_Shape_Divider extends OxyEl
 
     }
 
-    function add_section_button() { ?>
+    function add_section_button() { 
+        
+        if (oxygen_hide_element_button('oxy-shape-divider')) {
+			return;
+        }
+
+        ?>
 
         <div class="oxygen-control-row"
             ng-show="isActiveName('ct_section')&&!hasOpenTabs('ct_section')">
@@ -237,7 +243,7 @@ class Oxygen_Shape_Divider extends OxyEl
 
         }
 
-        if ( $options['custom_shape'] ) {
+        if ( isset( $options['custom_shape'] ) && $options['custom_shape'] ) {
             $svg_shape = $options['custom_shape'];
         }
 

@@ -42,6 +42,7 @@ if( oxygen_can_activate_builder_compression() ){
 	</div><!-- #ct-builder -->
 	<div id="oxygen-resize-box" oxygen-resize-box>
 		<div id="oxygen-resize-box-titlebar" class="oxygen-resize-box-titlebar">
+			<?php if (oxygen_vsb_user_can_drag_n_drop()) : ?>
 			<div id="oxygen-resize-box-drag-handler" class="oxygen-resize-box-drag oxygen-resize-box-icon"
 				ng-hide="isBuiltIn()"
 				 dnd-draggable=""
@@ -50,6 +51,7 @@ if( oxygen_can_activate_builder_compression() ){
 				 dnd-dragstart="dragstartResizeBoxCallback(event)"
 				 dnd-dragend="dragendResizeBoxCallback(event)"
 				 dnd-disable-if="isLastRow()"></div>
+			<?php endif; ?>
 			<div class="oxygen-resize-box-breadcrumbs">
 				<span class="oxygen-resize-box-breadcrumb">{{niceNames[component.active.name]}}<span ng-if="component.active.parent.id > 0" class="oxygen-resize-box-top oxygen-resize-box-icon" ng-click="activateComponent(component.active.parent.id, component.active.parent.name)"></span></span>
 			</div>

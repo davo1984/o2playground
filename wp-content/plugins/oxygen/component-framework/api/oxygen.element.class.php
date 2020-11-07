@@ -35,7 +35,7 @@ Class OxygenElement extends OxygenElementControls {
 		$this->params['title'] 			= $title;
 		$this->params['icon'] 			= $icon;
 		$this->params['button_place'] 	= $button_place;
-		$this->params['button_priority']= $other_options['button_priority'];
+		$this->params['button_priority']= isset($other_options['button_priority']) ? $other_options['button_priority'] : 10;
 		$this->params['other_options'] 	= $other_options;
 		$this->params['has_js'] = $has_js;
 
@@ -70,6 +70,9 @@ Class OxygenElement extends OxygenElementControls {
 				'tag'  => $this->params['tag'],
 			)
 		);
+
+		global $oxygen_vsb_components;
+		$oxygen_vsb_components[$this->params['tag']] = $this->component;
 
 		// remove the default button location hook, we will re-add this later
 		remove_action("ct_toolbar_fundamentals_list", array( $this->component, "component_button" ) );

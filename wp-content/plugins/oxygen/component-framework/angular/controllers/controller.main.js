@@ -69,6 +69,21 @@ CTFrontendBuilder.controller("MainController", function($scope, $parentScope, $h
 
     }
 
+    $scope.updateParentRepeater = function(id) {
+        
+        var component = $scope.getComponentById(id);
+
+        if (!component) {
+            return false;
+        }
+
+        var oxyList = component.closest('.oxy-dynamic-list');
+
+        if (oxyList.length > 0 && !oxyList.hasClass('oxy-dynamic-list-edit')) {
+            $scope.updateRepeaterQuery(parseInt(oxyList.attr('ng-attr-component-id')))
+        }
+    }
+
     $scope.updateRepeaterQuery = function(id) {
         if(typeof(id) == 'undefined') {
             id = $scope.component.active.id;
@@ -3302,7 +3317,12 @@ CTFrontendBuilder.controller("MainController", function($scope, $parentScope, $h
             console.log("getComponentTemplate()", componentName, id, type);
         }
 
-        var options   = 'ng-mousedown="activateComponent('+id+ ', \''+componentName+'\', $event);" ' +
+        var activateAttr = 'ng-mousedown="activateComponent('+id+ ', \''+componentName+'\', $event);" ';
+        if (CtBuilderAjax.userEditOnly=="true" && !$scope.isElementEnabledForUser(componentName) && componentName === "ct_code_block"){
+            activateAttr = "";
+        }
+
+        var options   = activateAttr +
                         'ng-attr-component-id="'+id+'" ' + 
                         'ctevalconditions ' +
                         'ng-class="{\'ct_hidden_by_conditional_logic\': component.options['+id+ '][\'model\'][\'globalConditionsResult\'] === false, \'ct-active\' : parentScope.isActiveId('+id+'),\'ct-active-parent\' : parentScope.isActiveParentId('+id+')&&globalSettings.indicateParents==\'true\''+
@@ -3362,6 +3382,12 @@ CTFrontendBuilder.controller("MainController", function($scope, $parentScope, $h
 
         // remove dnd attributes for outer content excluding the Inner Content
         if (id >= 100000 && componentName != "ct_inner_content") {
+            dndListAttr = ""; 
+            dndListAttrHorizontal = "";
+            dndDraggableAttr = "";
+        }
+
+        if (CtBuilderAjax.userCanFullAccess!="true"&&CtBuilderAjax.userCanDragNDrop!="true") {
             dndListAttr = ""; 
             dndListAttrHorizontal = "";
             dndDraggableAttr = "";
@@ -4844,6 +4870,23 @@ CTFrontendBuilder.controller("MainController", function($scope, $parentScope, $h
         else {
             return false;
         }
+    }
+    
+    /**
+     * @since 3.5
+     * @author Ilya K.
+     */
+
+    $scope.isElementEnabledForUser = function(name) {
+
+        if (undefined === name) {
+            name = $scope.component.active.name;
+        }
+
+        if (undefined==$scope.userEnabledElements || typeof $scope.userEnabledElements.indexOf !== "function")
+            return false
+
+        return $scope.userEnabledElements.indexOf(name) > -1
     }
 
 
